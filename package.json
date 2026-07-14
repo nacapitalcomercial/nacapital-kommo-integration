@@ -1,0 +1,16 @@
+{
+  "name": "nacapital-kommo-integration",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/server.js",
+    "dev": "node --watch src/server.js",
+    "smoke": "node scripts/smoke-test.mjs",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
