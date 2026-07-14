@@ -13,6 +13,18 @@ const webhookGuard = new WebhookGuard({
   maxEntries: config.app.webhookMaxCacheEntries
 });
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,x-kommo-secret");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
+  return next();
+});
+
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/", (_req, res) => {
