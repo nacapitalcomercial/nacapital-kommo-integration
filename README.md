@@ -153,6 +153,36 @@ Para ambiente publicado:
 SMOKE_BASE_URL=https://nacapital.work SMOKE_WEBHOOK_SECRET=seu_segredo npm run smoke
 ```
 
+Validacao recorrente de deploy:
+
+```bash
+npm run validate:deploy
+```
+
+Esse roteiro faz 4 checagens em sequencia:
+
+- testa `GET /`
+- testa `GET /health`
+- dispara um `POST /webhooks/kommo` com um lead de teste unico
+- consulta o lead criado no Kommo e valida nome, pipeline, responsavel e tags
+
+Para ambiente publicado, use:
+
+```bash
+VALIDATION_BASE_URL=https://nacapital-kommo-integration.onrender.com ^
+VALIDATION_WEBHOOK_SECRET=seu_segredo ^
+npm run validate:deploy
+```
+
+Variaveis aceitas pelo teste de deploy:
+
+- `VALIDATION_BASE_URL`
+- `VALIDATION_WEBHOOK_SECRET`
+- `VALIDATION_EXPECTED_PIPELINE_ID`
+- `VALIDATION_EXPECTED_STATUS_ID`
+- `VALIDATION_EXPECTED_RESPONSIBLE_ID`
+- `VALIDATION_MESSAGE_TEXT`
+
 ## Fluxos implementados
 
 ### Escritorio Virtual
