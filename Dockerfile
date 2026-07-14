@@ -5,10 +5,10 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install --omit=dev
 
+COPY scripts ./scripts
 COPY src ./src
 COPY README.md ./
 
 EXPOSE 3000
 
 CMD ["npm", "start"]
-
