@@ -1,13 +1,32 @@
 import { config } from "./config.js";
 
-function buildCustomFieldValue(fieldId, value) {
+function normalizeEnumKey(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function buildCustomFieldValue(fieldId, value, enumMap = null) {
   if (!fieldId || value == null || value === "") {
     return null;
   }
 
+  const normalizedKey = normalizeEnumKey(value);
+  const enumEntry = enumMap?.[normalizedKey] || null;
+
   return {
     field_id: fieldId,
-    values: [{ value }]
+    values: [
+      enumEntry
+        ? {
+            enum_id: enumEntry.enumId,
+            value: enumEntry.value
+          }
+        : { value }
+    ]
   };
 }
 
@@ -218,13 +237,52 @@ export class KommoClient {
 
   buildLeadFieldMap(values) {
     return [
-      buildCustomFieldValue(config.customFields.produtoInteresse, values.produtoInteresse),
-      buildCustomFieldValue(config.customFields.origemLead, values.origemLead),
-      buildCustomFieldValue(config.customFields.temperaturaLead, values.temperaturaLead),
-      buildCustomFieldValue(config.customFields.querContratar, values.querContratar),
-      buildCustomFieldValue(config.customFields.querFalarComTime, values.querFalarComTime),
-      buildCustomFieldValue(config.customFields.prontoParaFechamento, values.prontoParaFechamento),
-      buildCustomFieldValue(config.customFields.documentacaoCompleta, values.documentacaoCompleta)
+      buildCustomFieldValue(
+        config.customFields.produtoInteresse,
+        values.produtoInteresse,
+        config.customFieldEnums.produtoInteresse
+      ),
+      buildCustomFieldValue(
+        config.customFields.origemLead,
+        values.origemLead,
+        config.customFieldEnums.origemLead
+      ),
+      buildCustomFieldValue(
+        config.customFields.canal,
+        values.canal,
+        config.customFieldEnums.canal
+      ),
+      buildCustomFieldValue(config.customFields.campanha, values.campanha),
+      buildCustomFieldValue(config.customFields.adset, values.adset),
+      buildCustomFieldValue(config.customFields.anuncio, values.anuncio),
+      buildCustomFieldValue(config.customFields.palavraChave, values.palavraChave),
+      buildCustomFieldValue(
+        config.customFields.temperaturaLead,
+        values.temperaturaLead,
+        config.customFieldEnums.temperaturaLead
+      ),
+      buildCustomFieldValue(
+        config.customFields.querContratar,
+        values.querContratar,
+        config.customFieldEnums.querContratar
+      ),
+      buildCustomFieldValue(
+        config.customFields.querFalarComTime,
+        values.querFalarComTime,
+        config.customFieldEnums.querFalarComTime
+      ),
+      buildCustomFieldValue(
+        config.customFields.prontoParaFechamento,
+        values.prontoParaFechamento,
+        config.customFieldEnums.prontoParaFechamento
+      ),
+      buildCustomFieldValue(config.customFields.documentacaoCompleta, values.documentacaoCompleta),
+      buildCustomFieldValue(config.customFields.unidadeInteresse, values.unidadeInteresse),
+      buildCustomFieldValue(config.customFields.sdrResponsavel, values.sdrResponsavel),
+      buildCustomFieldValue(config.customFields.closerResponsavel, values.closerResponsavel),
+      buildCustomFieldValue(config.customFields.dataPrimeiraResposta, values.dataPrimeiraResposta),
+      buildCustomFieldValue(config.customFields.dataAgendamento, values.dataAgendamento),
+      buildCustomFieldValue(config.customFields.motivoPerda, values.motivoPerda)
     ].filter(Boolean);
   }
 }
