@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "node:path";
 
 function required(name) {
   const value = process.env[name];
@@ -13,11 +14,41 @@ function optionalNumber(name) {
   return value ? Number(value) : null;
 }
 
+function optionalList(name) {
+  const value = process.env[name];
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(",")
+    .map((item) => Number(item.trim()))
+    .filter((item) => Number.isFinite(item) && item > 0);
+}
+
+function optionalNumberList(name, fallback = "") {
+  const value = process.env[name] || fallback;
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(",")
+    .map((item) => Number(item.trim()))
+    .filter((item) => Number.isFinite(item) && item > 0);
+}
+
 export const config = {
   port: Number(process.env.PORT || 3000),
   app: {
     webhookDedupeTtlMs: Number(process.env.WEBHOOK_DEDUPE_TTL_MS || 300000),
-    webhookMaxCacheEntries: Number(process.env.WEBHOOK_MAX_CACHE_ENTRIES || 2000)
+    webhookMaxCacheEntries: Number(process.env.WEBHOOK_MAX_CACHE_ENTRIES || 2000),
+    timezone: process.env.APP_TIMEZONE || "America/Sao_Paulo",
+    dataStorePath: process.env.DATA_STORE_PATH || path.resolve("data", "automation-store.json"),
+    metricsRecentLimit: Number(process.env.METRICS_RECENT_LIMIT || 100),
+    followupPollMs: Number(process.env.FOLLOWUP_POLL_MS || 60000),
+    inboundFollowupMinutes: optionalNumberList("INBOUND_FOLLOWUP_MINUTES", "15,120,1440,4320"),
+    outboundFollowupMinutes: optionalNumberList("OUTBOUND_FOLLOWUP_MINUTES", "1440,4320")
   },
   kommo: {
     subdomain: required("KOMMO_SUBDOMAIN"),
@@ -29,16 +60,37 @@ export const config = {
   },
   pipelines: {
     default: optionalNumber("DEFAULT_PIPELINE_ID"),
+    inboundTriage: optionalNumber("PIPELINE_FUNIL_VENDAS_ID") || optionalNumber("DEFAULT_PIPELINE_ID"),
+    prospeccao: optionalNumber("PIPELINE_PROSPECCAO_ID"),
     escritorioVirtual: optionalNumber("PIPELINE_ESCRITORIO_VIRTUAL_ID"),
     avulsos: optionalNumber("PIPELINE_AVULSOS_ID"),
     eventos: optionalNumber("PIPELINE_EVENTOS_ID"),
     residencia: optionalNumber("PIPELINE_RESIDENCIA_ID"),
-    coworking: optionalNumber("PIPELINE_COWORKING_ID")
+    coworking: optionalNumber("PIPELINE_COWORKING_ID"),
+    joaoDaCruz: optionalNumber("PIPELINE_NC_JOAO_DA_CRUZ_ID"),
+    rioBranco: optionalNumber("PIPELINE_NC_RIO_BRANCO_ID"),
+    organizacao: optionalNumber("PIPELINE_ORGANIZACAO_ID")
   },
   users: {
-    defaultResponsibleId: optionalNumber("DEFAULT_RESPONSIBLE_USER_ID")
+    defaultResponsibleId: optionalNumber("DEFAULT_RESPONSIBLE_USER_ID"),
+    sdrRoundRobinIds: optionalList("SDR_ROUND_ROBIN_USER_IDS"),
+    closerRoundRobinIds: optionalList("CLOSER_ROUND_ROBIN_USER_IDS")
   },
   stages: {
+    triagemNovoLead: optionalNumber("STAGE_TRIAGEM_NOVO_LEAD_ID"),
+    triagemQualificacao: optionalNumber("STAGE_TRIAGEM_QUALIFICACAO_ID"),
+    triagemAguardandoResposta: optionalNumber("STAGE_TRIAGEM_AGUARDANDO_RESPOSTA_ID"),
+    triagemAgendamento: optionalNumber("STAGE_TRIAGEM_AGENDAMENTO_ID"),
+    triagemEncaminhadoProduto: optionalNumber("STAGE_TRIAGEM_ENCAMINHADO_PRODUTO_ID"),
+    prospeccaoBaseCarregada: optionalNumber("STAGE_PROSPECCAO_BASE_CARREGADA_ID"),
+    prospeccaoPrimeiroContato: optionalNumber("STAGE_PROSPECCAO_PRIMEIRO_CONTATO_ID"),
+    prospeccaoSemResposta: optionalNumber("STAGE_PROSPECCAO_SEM_RESPOSTA_ID"),
+    prospeccaoContatoFeito: optionalNumber("STAGE_PROSPECCAO_CONTATO_FEITO_ID"),
+    prospeccaoQualificado: optionalNumber("STAGE_PROSPECCAO_QUALIFICADO_ID"),
+    prospeccaoReuniaoAgendada: optionalNumber("STAGE_PROSPECCAO_REUNIAO_AGENDADA_ID"),
+    prospeccaoEntregueCloser: optionalNumber("STAGE_PROSPECCAO_ENTREGUE_CLOSER_ID"),
+    prospeccaoSemFit: optionalNumber("STAGE_PROSPECCAO_SEM_FIT_ID"),
+    prospeccaoReciclagem: optionalNumber("STAGE_PROSPECCAO_RECICLAGEM_ID"),
     evQualificacao: optionalNumber("STAGE_EV_QUALIFICACAO_ID"),
     evDocumentacao: optionalNumber("STAGE_EV_DOCUMENTACAO_ID"),
     evProntoContrato: optionalNumber("STAGE_EV_PRONTO_CONTRATO_ID"),
@@ -65,16 +117,37 @@ export const config = {
   customFields: {
     produtoInteresse: optionalNumber("CUSTOM_FIELD_PRODUTO_INTERESSE_ID"),
     origemLead: optionalNumber("CUSTOM_FIELD_ORIGEM_LEAD_ID"),
+    canal: optionalNumber("CUSTOM_FIELD_CANAL_ID"),
+    campanha: optionalNumber("CUSTOM_FIELD_CAMPANHA_ID"),
+    adset: optionalNumber("CUSTOM_FIELD_ADSET_ID"),
+    anuncio: optionalNumber("CUSTOM_FIELD_ANUNCIO_ID"),
+    palavraChave: optionalNumber("CUSTOM_FIELD_PALAVRA_CHAVE_ID"),
     temperaturaLead: optionalNumber("CUSTOM_FIELD_TEMPERATURA_LEAD_ID"),
     querContratar: optionalNumber("CUSTOM_FIELD_QUER_CONTRATAR_ID"),
     querFalarComTime: optionalNumber("CUSTOM_FIELD_QUER_FALAR_COM_TIME_ID"),
     prontoParaFechamento: optionalNumber("CUSTOM_FIELD_PRONTO_PARA_FECHAMENTO_ID"),
-    documentacaoCompleta: optionalNumber("CUSTOM_FIELD_DOCUMENTACAO_COMPLETA_ID")
+    documentacaoCompleta: optionalNumber("CUSTOM_FIELD_DOCUMENTACAO_COMPLETA_ID"),
+    unidadeInteresse: optionalNumber("CUSTOM_FIELD_UNIDADE_INTERESSE_ID"),
+    sdrResponsavel: optionalNumber("CUSTOM_FIELD_SDR_RESPONSAVEL_ID"),
+    closerResponsavel: optionalNumber("CUSTOM_FIELD_CLOSER_RESPONSAVEL_ID"),
+    dataPrimeiraResposta: optionalNumber("CUSTOM_FIELD_DATA_PRIMEIRA_RESPOSTA_ID"),
+    dataAgendamento: optionalNumber("CUSTOM_FIELD_DATA_AGENDAMENTO_ID"),
+    motivoPerda: optionalNumber("CUSTOM_FIELD_MOTIVO_PERDA_ID")
   },
   contactFields: {
     phone: optionalNumber("CONTACT_FIELD_PHONE_ID"),
     email: optionalNumber("CONTACT_FIELD_EMAIL_ID"),
     qualificacao: optionalNumber("CONTACT_FIELD_QUALIFICACAO_ID"),
     comoNosConheceu: optionalNumber("CONTACT_FIELD_COMO_NOS_CONHECEU_ID")
+  },
+  routing: {
+    adsSources: (process.env.ADS_SOURCES || "google,google ads,instagram,instagram ads,meta,facebook")
+      .split(",")
+      .map((item) => item.trim().toLowerCase())
+      .filter(Boolean),
+    outboundSources: (process.env.OUTBOUND_SOURCES || "sdr,outbound,prospeccao,prospecção,ativo")
+      .split(",")
+      .map((item) => item.trim().toLowerCase())
+      .filter(Boolean)
   }
 };
