@@ -134,6 +134,51 @@ export const config = {
     dataAgendamento: optionalNumber("CUSTOM_FIELD_DATA_AGENDAMENTO_ID"),
     motivoPerda: optionalNumber("CUSTOM_FIELD_MOTIVO_PERDA_ID")
   },
+  customFieldEnums: {
+    produtoInteresse: {
+      escritorio_virtual: { enumId: 929473, value: "Escritorio Virtual" },
+      residencia: { enumId: 929475, value: "Residencia" },
+      avulsos: { enumId: 929477, value: "Avulsos" },
+      eventos: { enumId: 929479, value: "Eventos" },
+      coworking: { enumId: 929481, value: "Coworking" }
+    },
+    origemLead: {
+      google_ads: { enumId: 929483, value: "Google Ads" },
+      instagram_ads: { enumId: 929485, value: "Instagram Ads" },
+      whatsapp: { enumId: 929487, value: "WhatsApp" },
+      site: { enumId: 929489, value: "Site" },
+      sdr: { enumId: 929491, value: "SDR" },
+      indicacao: { enumId: 929493, value: "IndicaÃ§Ã£o" },
+      organico: { enumId: 929495, value: "OrgÃ¢nico" }
+    },
+    canal: {
+      google: { enumId: 929497, value: "google" },
+      instagram: { enumId: 929499, value: "instagram" },
+      whatsapp: { enumId: 929501, value: "whatsapp" },
+      site: { enumId: 929503, value: "site" },
+      telefone: { enumId: 929505, value: "telefone" },
+      sdr: { enumId: 929507, value: "sdr" },
+      interno: { enumId: 929509, value: "interno" }
+    },
+    temperaturaLead: {
+      frio: { enumId: 929511, value: "Frio" },
+      morno: { enumId: 929513, value: "Morno" },
+      quente: { enumId: 929515, value: "Quente" },
+      muito_quente: { enumId: 929517, value: "Muito quente" }
+    },
+    querContratar: {
+      sim: { enumId: 929519, value: "Sim" },
+      nao: { enumId: 929521, value: "NÃ£o" }
+    },
+    querFalarComTime: {
+      sim: { enumId: 929523, value: "Sim" },
+      nao: { enumId: 929525, value: "NÃ£o" }
+    },
+    prontoParaFechamento: {
+      sim: { enumId: 929527, value: "Sim" },
+      nao: { enumId: 929529, value: "NÃ£o" }
+    }
+  },
   contactFields: {
     phone: optionalNumber("CONTACT_FIELD_PHONE_ID"),
     email: optionalNumber("CONTACT_FIELD_EMAIL_ID"),
@@ -145,7 +190,7 @@ export const config = {
       .split(",")
       .map((item) => item.trim().toLowerCase())
       .filter(Boolean),
-    outboundSources: (process.env.OUTBOUND_SOURCES || "sdr,outbound,prospeccao,prospecção,ativo")
+    outboundSources: (process.env.OUTBOUND_SOURCES || "sdr,outbound,prospeccao,prospecÃ§Ã£o,ativo")
       .split(",")
       .map((item) => item.trim().toLowerCase())
       .filter(Boolean)
