@@ -540,7 +540,7 @@ function buildLeadContext({ event, intent, product, routing }) {
   return {
     productName,
     specialistPipelineName,
-    entryPipelineName: routing.mode === "outbound_sdr" ? "PROSPECÇÃO" : "Funil de vendas",
+    entryPipelineName: routing.mode === "outbound_sdr" ? "PROSPECÃ‡ÃƒO" : "Funil de vendas",
     entryPipelineId:
       routing.mode === "outbound_sdr"
         ? config.pipelines.prospeccao || config.pipelines.default
@@ -569,8 +569,8 @@ function classifyRouting(event) {
 
   return {
     mode: isOutbound ? "outbound_sdr" : isAds ? "inbound_ads" : "inbound",
-    channel: event.channel || event.source || "kommo",
-    originLabel: isOutbound ? "SDR Ativo" : isAds ? "Midia Paga" : "Inbound",
+    channel: resolveChannelLabel(channel, source),
+    originLabel: resolveOriginLabel({ isAds, isOutbound, channel, source }),
     normalizedSource: source
   };
 }
@@ -596,6 +596,58 @@ function buildCommonLeadFields({ kommo, event, routing, productName, temperature
     temperaturaLead: temperature,
     unidadeInteresse: event.unit
   });
+}
+
+function resolveOriginLabel({ isAds, isOutbound, channel, source }) {
+  if (isOutbound) {
+    return "SDR";
+  }
+
+  if (isAds) {
+    if (/(instagram|meta|facebook)/.test(channel) || /(instagram|meta|facebook)/.test(source)) {
+      return "Instagram Ads";
+    }
+
+    return "Google Ads";
+  }
+
+  if (source.includes("whatsapp") || channel.includes("whatsapp")) {
+    return "WhatsApp";
+  }
+
+  if (source.includes("site") || channel.includes("site")) {
+    return "Site";
+  }
+
+  return "OrgÃ¢nico";
+}
+
+function resolveChannelLabel(channel, source) {
+  if (channel.includes("whatsapp") || source.includes("whatsapp")) {
+    return "whatsapp";
+  }
+
+  if (channel.includes("instagram") || source.includes("instagram") || source.includes("meta")) {
+    return "instagram";
+  }
+
+  if (channel.includes("google") || source.includes("google")) {
+    return "google";
+  }
+
+  if (channel.includes("site") || source.includes("site")) {
+    return "site";
+  }
+
+  if (channel.includes("telefone") || source.includes("telefone")) {
+    return "telefone";
+  }
+
+  if (channel.includes("sdr") || source.includes("sdr")) {
+    return "sdr";
+  }
+
+  return "interno";
 }
 
 function resolveTemperature(intent, routing, event) {
