@@ -1,57 +1,1208 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Painel Dinamico de Leads | NaCapital</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Leads NaCapital</title>
   <style>
-    :root{--bg:#f4efe5;--panel:#fffaf2;--text:#152440;--muted:#667085;--accent:#ef7d37;--line:rgba(21,36,64,.12);--shadow:0 22px 60px rgba(21,36,64,.08)}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Segoe UI,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 0 0,rgba(239,125,55,.18),transparent 22%),radial-gradient(circle at 100% 10%,rgba(35,116,171,.14),transparent 18%),linear-gradient(180deg,#faf6ee,var(--bg))}.shell{width:min(1180px,calc(100% - 32px));margin:auto;padding:34px 0 56px}.card{background:rgba(255,250,242,.9);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(14px)}.hero{display:grid;grid-template-columns:1.45fr 1fr;gap:24px;padding:30px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.78rem;font-weight:800;color:#2d5f73}h1{font-size:clamp(2.3rem,5vw,4.6rem);line-height:.92;letter-spacing:-.06em;margin:12px 0 14px;max-width:12ch}h2{margin:4px 0 0;font-size:1.55rem;letter-spacing:-.04em}p,.muted,label,.small{color:var(--muted);line-height:1.65}.actions{display:flex;flex-direction:column;gap:12px;justify-content:center}.btn,select,input{font:inherit}.btn{border:1px solid transparent;border-radius:999px;padding:13px 17px;cursor:pointer;background:#fff;color:var(--text)}.primary{background:var(--accent);color:#fff;box-shadow:0 14px 28px rgba(239,125,55,.24)}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px}.metric{padding:21px}.metric strong{display:block;margin-top:8px;font-size:1.28rem}.sync{padding:24px;margin-top:16px}.sync-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end}.input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;background:#fff}.sync-actions{display:flex;gap:10px;flex-wrap:wrap}.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-top:16px}.panel{padding:23px}.panel-head{display:flex;justify-content:space-between;gap:14px;margin-bottom:18px}.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.controls label{display:flex;flex-direction:column;gap:7px;font-size:.92rem}select{border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff}.chart{display:flex;flex-direction:column;gap:14px}.period-row,.cat-row{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}.bar-track{display:flex;min-height:24px;overflow:hidden;border-radius:999px;background:rgba(21,36,64,.08)}.seg,.bar{border-radius:999px;min-width:8px}.cat-label{display:flex;gap:9px;align-items:center}.dot{width:12px;height:12px;border-radius:50%}.cat-bar{display:flex;align-items:center;gap:10px}.table{padding:23px;margin-top:16px}.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.note{padding:16px;background:#fff;border:1px solid var(--line);border-radius:18px}.status{margin-top:14px;color:var(--muted);font-size:.92rem}.hidden{display:none}@media(max-width:900px){.hero,.grid4,.grid2,.sync-row,.notes{grid-template-columns:1fr}.controls,.sync-actions{justify-content:flex-start}}@media(max-width:620px){.period-row,.cat-row{grid-template-columns:1fr}.shell{width:min(100% - 20px,1180px);padding-top:20px}.hero,.panel,.sync,.table{padding:20px}}
+    :root {
+      --bg: #f4efe5;
+      --panel: rgba(255, 251, 245, 0.88);
+      --border: rgba(21, 36, 64, 0.12);
+      --text: #152440;
+      --muted: #5d6779;
+      --accent: #ef7d37;
+      --accent-dark: #cb5e1d;
+      --ink-soft: #2d5f73;
+      --shadow: 0 22px 60px rgba(21, 36, 64, 0.08);
+      --google: #2374ab;
+      --instagram: #ef7d37;
+      --indicacao: #2a9d8f;
+      --base: #6a4c93;
+      --nao-informado: #b8b8aa;
+      --ligacao: #bc4749;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(239, 125, 55, 0.18), transparent 18%),
+        radial-gradient(circle at right 18%, rgba(35, 116, 171, 0.12), transparent 16%),
+        linear-gradient(180deg, #faf6ee 0%, var(--bg) 100%);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero,
+    .content-grid,
+    .meta-grid,
+    .note-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      grid-template-columns: 1.5fr 1fr;
+      padding: 30px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1 {
+      margin: 12px 0 14px;
+      font-size: clamp(2.2rem, 4.5vw, 4.3rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      max-width: 12ch;
+    }
+
+    h2 {
+      margin: 6px 0 0;
+      font-size: 1.6rem;
+      letter-spacing: -0.04em;
+    }
+
+    p,
+    label,
+    .muted,
+    .template-row,
+    .stacked-label span,
+    .section-label {
+      color: var(--muted);
+    }
+
+    .hero-copy p {
+      max-width: 58ch;
+      line-height: 1.75;
+      font-size: 1.02rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .button,
+    select {
+      font: inherit;
+    }
+
+    .button {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(239, 125, 55, 0.24);
+    }
+
+    .button-primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .button-secondary,
+    .button-ghost,
+    select {
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .meta-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .metric-card,
+    .panel-card,
+    .table-card,
+    .note-card {
+      padding: 22px;
+    }
+
+    .metric-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.18rem;
+      line-height: 1.35;
+    }
+
+    .content-grid {
+      grid-template-columns: 1.35fr 1fr;
+      margin-top: 18px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .section-label {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .controls label {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.92rem;
+    }
+
+    select {
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-width: 150px;
+    }
+
+    .stacked-chart,
+    .totals-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .stacked-row,
+    .totals-row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stacked-row {
+      grid-template-columns: 148px 1fr;
+      align-items: center;
+    }
+
+    .stacked-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stacked-label strong,
+    .totals-bar-area strong {
+      font-size: 0.95rem;
+    }
+
+    .stacked-track {
+      display: flex;
+      min-height: 24px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(21, 36, 64, 0.08);
+    }
+
+    .stacked-segment,
+    .totals-bar {
+      min-width: 10px;
+      border-radius: 999px;
+    }
+
+    .totals-row {
+      grid-template-columns: minmax(0, 180px) 1fr;
+      align-items: center;
+    }
+
+    .totals-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .totals-bar-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .totals-bar {
+      min-height: 18px;
+    }
+
+    .table-card {
+      margin-top: 18px;
+    }
+
+    .note-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .note-card strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .template-table {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .template-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.56);
+    }
+
+    .template-row + .template-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .template-row.head {
+      color: var(--text);
+      font-weight: 700;
+      background: rgba(21, 36, 64, 0.06);
+    }
+
+    .status-line {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .sync-card {
+      margin-top: 18px;
+      padding: 24px;
+    }
+
+    .sync-grid {
+      display: grid;
+      grid-template-columns: 1.2fr auto;
+      gap: 18px;
+      align-items: end;
+    }
+
+    .sync-grid label {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sheet-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--text);
+    }
+
+    .sync-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .helper-text {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .content-grid,
+      .meta-grid,
+      .note-grid,
+      .sync-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        max-width: none;
+      }
+
+      .controls,
+      .controls-row {
+        align-items: stretch;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 20px, 1180px);
+        padding: 20px 0 36px;
+      }
+
+      .hero,
+      .metric-card,
+      .panel-card,
+      .table-card,
+      .note-card {
+        padding: 20px;
+      }
+
+      .stacked-row,
+      .totals-row,
+      .template-row,
+      .sync-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-header {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
 <body>
-  <main class="shell">
+  <div class="shell">
     <section class="card hero">
-      <div><div class="eyebrow">NaCapital</div><h1>Painel dinamico de leads</h1><p>Leitura semanal de leads por periodo e categoria de entrada. Use upload de planilha ou conecte a base publicada do Google Sheets.</p></div>
-      <div class="actions"><button class="btn primary" id="uploadBtn">Carregar planilha</button><button class="btn" id="templateBtn">Baixar template</button><button class="btn" id="exportBtn">Exportar base atual</button><button class="btn" id="resetBtn">Restaurar base inicial</button><input class="hidden" id="fileInput" type="file" accept=".csv,.txt,.xlsx,.xls"></div>
+      <div class="hero-copy">
+        <span class="eyebrow">NaCapital</span>
+        <h1>Painel dinÃ¢mico de leads</h1>
+        <p>Este painel recebe uma planilha semanal exportada do Excel em CSV e transforma a base em leitura por perÃ­odo e por categoria de entrada. A base inicial jÃ¡ vem preenchida com o relatÃ³rio consolidado de 27/07/2026.</p>
+      </div>
+
+      <div class="hero-actions">
+        <button class="button button-primary" id="upload-trigger" type="button">Carregar planilha</button>
+        <button class="button button-secondary" id="template-button" type="button">Baixar template</button>
+        <button class="button button-secondary" id="export-button" type="button">Exportar base atual</button>
+        <button class="button button-ghost" id="reset-button" type="button">Restaurar base inicial</button>
+        <input class="hidden" id="csv-input" type="file" accept=".csv,.txt,.xlsx,.xls">
+      </div>
     </section>
-    <section class="grid4"><article class="card metric"><span class="muted">Fonte atual</span><strong id="source">Base inicial</strong></article><article class="card metric"><span class="muted">Total de leads</span><strong id="total">0</strong></article><article class="card metric"><span class="muted">Categorias</span><strong id="cats">0</strong></article><article class="card metric"><span class="muted">Linhas ignoradas</span><strong id="skipped">0</strong></article></section>
-    <section class="card sync"><div class="panel-head"><div><span class="eyebrow">Google Sheets</span><h2>Sincronizacao da base</h2></div></div><div class="sync-row"><label>URL da planilha ou CSV publicado<input class="input" id="sheetUrl" placeholder="Cole o link do Google Sheets ou CSV publicado"></label><div class="sync-actions"><button class="btn primary" id="connectBtn">Conectar planilha</button><button class="btn" id="defaultSheetBtn">Usar planilha NaCapital</button><button class="btn" id="localBtn">Voltar para base local</button></div></div><p class="small">Para funcionar em site publico, a aba <b>Leads_Semanais</b> precisa estar publicada como CSV ou acessivel publicamente.</p></section>
-    <section class="grid2"><article class="card panel"><div class="panel-head"><div><span class="eyebrow">Leitura temporal</span><h2>Leads por periodo</h2></div><div class="controls"><label>Agrupar por<select id="mode"><option value="day">Dia</option><option value="week">Semana</option><option value="month">Mes</option></select></label><label>Importacao<select id="importMode"><option value="replace">Substituir base</option><option value="append">Somar a base atual</option></select></label></div></div><div class="chart" id="periodChart"></div></article><article class="card panel"><div class="panel-head"><div><span class="eyebrow">Origem</span><h2>Total por categoria</h2></div></div><div class="chart" id="catChart"></div></article></section>
-    <section class="card table"><div class="panel-head"><div><span class="eyebrow">Modelo esperado</span><h2>Formato da planilha</h2></div></div><div class="notes"><div class="note"><b>Colunas minimas</b><p>data e categoria.</p></div><div class="note"><b>Coluna opcional</b><p>quantidade.</p></div><div class="note"><b>Campos equivalentes</b><p>categoria, classificacao, origem ou canal.</p></div></div><div class="status" id="status">Use XLSX ou CSV exportado do Excel. Para XLSX, o painel procura a aba Leads_Semanais ou usa a primeira aba disponivel.</div></section>
-  </main>
+
+    <section class="meta-grid">
+      <article class="card metric-card">
+        <span class="muted">Fonte atual</span>
+        <strong id="source-label">Base inicial importada do PDF</strong>
+      </article>
+      <article class="card metric-card">
+        <span class="muted">Total de leads</span>
+        <strong id="total-leads">0</strong>
+      </article>
+      <article class="card metric-card">
+        <span class="muted">Categorias identificadas</span>
+        <strong id="categories-count">0</strong>
+      </article>
+      <article class="card metric-card">
+        <span class="muted">Linhas ignoradas</span>
+        <strong id="skipped-rows">0</strong>
+      </article>
+    </section>
+
+    <section class="card sync-card">
+      <div class="panel-header">
+        <div>
+          <span class="section-label">Google Sheets</span>
+          <h2>SincronizaÃ§Ã£o da base</h2>
+        </div>
+      </div>
+
+      <div class="sync-grid">
+        <label>
+          <span>URL pÃºblica da aba `Leads_Semanais`</span>
+          <input
+            class="sheet-input"
+            id="sheet-url-input"
+            type="text"
+            placeholder="Cole a URL de ediÃ§Ã£o da planilha ou a URL CSV publicada"
+          >
+        </label>
+
+        <div class="sync-actions">
+          <button class="button button-primary" id="connect-sheet-button" type="button">Conectar planilha</button>
+          <button class="button button-secondary" id="use-default-sheet-button" type="button">Usar planilha NaCapital</button>
+          <button class="button button-ghost" id="disconnect-sheet-button" type="button">Voltar para base local</button>
+        </div>
+      </div>
+
+      <div class="helper-text">
+        O painel consegue converter automaticamente um link de ediÃ§Ã£o do Google Sheets em URL CSV da aba principal. Para o site funcionar na web, a planilha precisa estar publicada ou acessÃ­vel publicamente nessa saÃ­da CSV.
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <article class="card panel-card">
+        <div class="panel-header">
+          <div>
+            <span class="section-label">Leitura temporal</span>
+            <h2>Leads por perÃ­odo</h2>
+          </div>
+
+          <div class="controls">
+            <div class="controls-row">
+              <label>
+                <span>Agrupar por</span>
+                <select id="group-mode">
+                  <option value="day">Dia</option>
+                  <option value="week">Semana</option>
+                  <option value="month">MÃªs</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Modo de importaÃ§Ã£o</span>
+                <select id="import-mode">
+                  <option value="replace">Substituir base</option>
+                  <option value="append">Somar Ã  base atual</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="stacked-chart" id="period-chart"></div>
+      </article>
+
+      <article class="card panel-card">
+        <div class="panel-header">
+          <div>
+            <span class="section-label">Origem da entrada</span>
+            <h2>Total por categoria</h2>
+          </div>
+        </div>
+
+        <div class="totals-chart" id="totals-chart"></div>
+      </article>
+    </section>
+
+    <section class="card table-card">
+      <div class="panel-header">
+        <div>
+          <span class="section-label">Modelo esperado</span>
+          <h2>Formato da planilha</h2>
+        </div>
+      </div>
+
+      <div class="note-grid">
+        <div class="card note-card">
+          <strong>Colunas mÃ­nimas</strong>
+          <p>`data` e `categoria`.</p>
+        </div>
+        <div class="card note-card">
+          <strong>Coluna opcional</strong>
+          <p>`quantidade`, quando a planilha jÃ¡ vier consolidada.</p>
+        </div>
+        <div class="card note-card">
+          <strong>Campos equivalentes</strong>
+          <p>`categoria`, `classificacao`, `origem` ou `canal`.</p>
+        </div>
+      </div>
+
+      <div class="template-table">
+        <div class="template-row head">
+          <span>data</span>
+          <span>categoria</span>
+          <span>quantidade</span>
+        </div>
+        <div class="template-row">
+          <span>27/07/2026</span>
+          <span>Instagram</span>
+          <span>6</span>
+        </div>
+        <div class="template-row">
+          <span>27/07/2026</span>
+          <span>Nao informado</span>
+          <span>1</span>
+        </div>
+        <div class="template-row">
+          <span>03/08/2026</span>
+          <span>Google</span>
+          <span>4</span>
+        </div>
+      </div>
+
+      <div class="status-line" id="status-line">Use planilhas XLSX ou CSV exportadas do Excel. Para arquivos XLSX, o painel procura a aba Leads_Semanais ou usa a primeira aba disponivel.</div>
+    </section>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE='nacapital-leads-dashboard-v3';
-    const SHEET='https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit';
-    const SHEET_NAME='Leads_Semanais';
-    const colors={Instagram:'#ef7d37',Google:'#2374ab','Indicacao/Parceiro':'#2a9d8f','Base/Retorno':'#6a4c93','Nao informado':'#b8b8aa',Ligacao:'#bc4749'};
-    const order=['Instagram','Google','Indicacao/Parceiro','Base/Retorno','Nao informado','Ligacao'];
-    const labels={'Indicacao/Parceiro':'Indicacao / Parceiro','Base/Retorno':'Base / Retorno'};
-    const initial=[['2026-04-14','Base/Retorno',1],['2026-07-10','Google',1],['2026-07-13','Google',3],['2026-07-13','Indicacao/Parceiro',1],['2026-07-13','Base/Retorno',1],['2026-07-13','Nao informado',3],['2026-07-13','Ligacao',1],['2026-07-14','Google',2],['2026-07-14','Instagram',1],['2026-07-14','Indicacao/Parceiro',1],['2026-07-14','Nao informado',1],['2026-07-15','Instagram',2],['2026-07-16','Google',1],['2026-07-16','Nao informado',2],['2026-07-17','Google',5],['2026-07-17','Base/Retorno',2],['2026-07-17','Nao informado',1],['2026-07-20','Instagram',4],['2026-07-20','Indicacao/Parceiro',1],['2026-07-20','Nao informado',1],['2026-07-21','Google',1],['2026-07-21','Instagram',1],['2026-07-22','Google',2],['2026-07-22','Base/Retorno',1],['2026-07-24','Instagram',7],['2026-07-24','Indicacao/Parceiro',1],['2026-07-27','Instagram',6],['2026-07-27','Nao informado',1]].map(([date,category,quantity])=>({date,category,quantity}));
-    let rows=initial.slice(), source='Base inicial importada do PDF', skipped=0, sheetCsv='', sheetEdit='';
-    const $=id=>document.getElementById(id);
-    function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'')}
-    function cat(v){const n=String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); if(!n)return'Nao informado'; if(n.includes('insta'))return'Instagram'; if(n.includes('google'))return'Google'; if(n.includes('indic')||n.includes('parceir')||n.includes('refer'))return'Indicacao/Parceiro'; if(n.includes('base')||n.includes('retorno')||n.includes('reativ'))return'Base/Retorno'; if(n.includes('liga')||n.includes('telefone'))return'Ligacao'; if(n.includes('nao informado')||n.includes('sem origem'))return'Nao informado'; return String(v).trim()||'Nao informado'}
-    function dateVal(v){const s=String(v||'').trim(); if(!s)return null; if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s; const serial=Number(s); if(Number.isFinite(serial)&&serial>20000&&serial<60000){const d=new Date(Math.round((serial-25569)*86400*1000)); return d.toISOString().slice(0,10)} const m=s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/); if(!m)return null; const y=Number(m[3])<100?2000+Number(m[3]):Number(m[3]); return `${String(y).padStart(4,'0')}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`}
-    function num(v){const n=Number(String(v||'').trim().replace(',','.')); return Number.isFinite(n)&&n>0?n:1}
-    function split(line){const d=line.includes(';')?';':','; return line.split(d).map(x=>x.trim().replace(/^"|"$/g,''))}
-    function merge(list){const m=new Map(); list.forEach(r=>{const k=r.date+'__'+r.category; m.set(k,(m.get(k)||0)+r.quantity)}); return [...m].map(([k,quantity])=>{const [date,category]=k.split('__'); return{date,category,quantity}}).sort((a,b)=>a.date.localeCompare(b.date)||a.category.localeCompare(b.category))}
-    function parseMatrix(matrix){const clean=matrix.map(r=>r.map(c=>String(c||'').trim())).filter(r=>r.some(Boolean)); if(!clean.length)return{rows:[],skipped:0}; const h=clean[0].map(norm); const di=h.findIndex(x=>['data','periodo','dia','date'].includes(x)); const ci=h.findIndex(x=>['categoria','classificacao','origem','canal','entradacategoria','source'].includes(x)); const qi=h.findIndex(x=>['quantidade','qtd','total','volume'].includes(x)); if(di<0||ci<0)return{rows:[],skipped:Math.max(clean.length-1,0)}; let sk=0,out=[]; clean.slice(1).forEach(r=>{const d=dateVal(r[di]); if(!d){sk++;return} out.push({date:d,category:cat(r[ci]),quantity:qi>=0?num(r[qi]):1})}); return{rows:merge(out),skipped:sk}}
-    function parseText(text){return parseMatrix(text.replace(/\r/g,'').split('\n').filter(Boolean).map(split))}
-    async function parseFile(file){if(/\.xlsx?$/.test(file.name.toLowerCase())){if(!window.XLSX)return{rows:[],skipped:0,error:'Biblioteca XLSX nao carregou. Exporte como CSV.'}; const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false}); const name=wb.SheetNames.includes(SHEET_NAME)?SHEET_NAME:wb.SheetNames[0]; return parseMatrix(XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:false,defval:''}))} return parseText(await file.text())}
-    function br(d){const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`}
-    function week(d){const [y,m,day]=d.split('-').map(Number), dt=new Date(Date.UTC(y,m-1,day)), w=dt.getUTCDay(); dt.setUTCDate(dt.getUTCDate()+(w===0?-6:1-w)); return dt.toISOString().slice(0,10)}
-    function key(d,mode){return mode==='week'?week(d):mode==='month'?d.slice(0,7):d}
-    function label(k,mode){return mode==='month'?`${k.slice(5)}/${k.slice(0,4)}`:mode==='week'?`Semana de ${br(k)}`:br(k)}
-    function derive(u){const t=String(u||'').trim(); if(!t)return{csvUrl:'',editUrl:''}; if(t.includes('tqx=out:csv')||t.includes('/export?format=csv'))return{csvUrl:t,editUrl:t}; const m=t.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/); if(!m)return{csvUrl:'',editUrl:t}; return{csvUrl:`https://docs.google.com/spreadsheets/d/${m[1]}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`,editUrl:`https://docs.google.com/spreadsheets/d/${m[1]}/edit`}}
-    function save(){localStorage.setItem(STORAGE,JSON.stringify({rows,source,skipped,sheetCsv,sheetEdit}))}
-    function load(){try{const s=JSON.parse(localStorage.getItem(STORAGE)||'{}'); if(Array.isArray(s.rows)&&s.rows.length){rows=s.rows;source=s.source||source;skipped=s.skipped||0;sheetCsv=s.sheetCsv||'';sheetEdit=s.sheetEdit||''}}catch(e){}}
-    function render(){const mode=$('mode').value, map=new Map(); rows.forEach(r=>{const k=key(r.date,mode), cur=map.get(k)||{period:k,total:0,by:{}}; cur.total+=r.quantity; cur.by[r.category]=(cur.by[r.category]||0)+r.quantity; map.set(k,cur)}); const periods=[...map.values()].sort((a,b)=>a.period.localeCompare(b.period)); const totals={}; rows.forEach(r=>totals[r.category]=(totals[r.category]||0)+r.quantity); const cats=order.filter(c=>totals[c]>0).map(c=>[c,totals[c]]).concat(Object.entries(totals).filter(([c])=>!order.includes(c))); const maxP=Math.max(1,...periods.map(p=>p.total)), maxC=Math.max(1,...cats.map(c=>c[1])); $('source').textContent=source; $('total').textContent=rows.reduce((s,r)=>s+r.quantity,0); $('cats').textContent=cats.length; $('skipped').textContent=skipped; $('periodChart').innerHTML=periods.map(p=>`<div class="period-row"><div><span class="muted">${label(p.period,mode)}</span><br><b>${p.total}</b></div><div class="bar-track">${Object.entries(p.by).map(([c,v])=>`<div class="seg" title="${c}: ${v}" style="width:${v/maxP*100}%;background:${colors[c]||'#152440'}"></div>`).join('')}</div></div>`).join(''); $('catChart').innerHTML=cats.map(([c,v])=>`<div class="cat-row"><div class="cat-label"><span class="dot" style="background:${colors[c]||'#152440'}"></span><span>${labels[c]||c}</span></div><div class="cat-bar"><div class="bar" style="height:18px;width:${v/maxC*100}%;background:${colors[c]||'#152440'}"></div><b>${v}</b></div></div>`).join('')}
-    async function sync(u,msg=true){const d=derive(u); if(!d.csvUrl){$('status').textContent='URL do Google Sheets nao reconhecida.';return} try{const res=await fetch(d.csvUrl,{cache:'no-store'}); if(!res.ok)throw new Error(res.status); const p=parseText(await res.text()); if(!p.rows.length)throw new Error('sem linhas'); rows=p.rows; skipped=p.skipped; sheetCsv=d.csvUrl; sheetEdit=d.editUrl; source='Google Sheets sincronizado em '+new Date().toLocaleString('pt-BR'); $('sheetUrl').value=sheetEdit||sheetCsv; save(); render(); if(msg)$('status').textContent='Planilha conectada com sucesso.'}catch(e){if(msg)$('status').textContent='Nao foi possivel ler a planilha. Publique a aba Leads_Semanais como CSV.'}}
-    function download(content,name,type){const a=document.createElement('a'), url=URL.createObjectURL(new Blob([content],{type})); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url)}
-    $('uploadBtn').onclick=()=>$('fileInput').click(); $('templateBtn').onclick=()=>download('data,categoria,quantidade\n27/07/2026,Instagram,6\n27/07/2026,Nao informado,1\n03/08/2026,Google,4\n','template-leads-nacapital.csv','text/csv;charset=utf-8'); $('exportBtn').onclick=()=>download(['data,categoria,quantidade',...rows.map(r=>`${br(r.date)},${r.category},${r.quantity}`)].join('\n'),'base-leads-nacapital.csv','text/csv;charset=utf-8'); $('resetBtn').onclick=()=>{rows=initial.slice();source='Base inicial importada do PDF';skipped=0;save();render();$('status').textContent='Base inicial restaurada.'}; $('mode').onchange=render; $('connectBtn').onclick=()=>sync($('sheetUrl').value,true); $('defaultSheetBtn').onclick=()=>{ $('sheetUrl').value=SHEET; sync(SHEET,true)}; $('localBtn').onclick=()=>{rows=initial.slice();source='Base local restaurada';skipped=0;sheetCsv='';sheetEdit='';save();render()}; $('fileInput').onchange=async e=>{const f=e.target.files[0]; if(!f)return; const p=await parseFile(f); if(!p.rows.length){skipped=p.skipped;source='Nao foi possivel ler '+f.name;$('status').textContent=p.error||'Arquivo sem colunas reconheciveis.';render();return} rows=$('importMode').value==='append'?merge(rows.concat(p.rows)):p.rows; skipped=p.skipped; source='Planilha carregada: '+f.name; save(); render(); $('status').textContent=`Base atualizada com ${p.rows.length} linhas consolidadas.`; e.target.value=''};
-    load(); if(sheetEdit||sheetCsv)$('sheetUrl').value=sheetEdit||sheetCsv; render(); if(sheetCsv)sync(sheetCsv,false);
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v2";
+    const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
+    const DEFAULT_SHEET_NAME = "Leads_Semanais";
+    const CATEGORY_ORDER = [
+      "Instagram",
+      "Google",
+      "Indicacao/Parceiro",
+      "Base/Retorno",
+      "Nao informado",
+      "Ligacao",
+    ];
+
+    const CATEGORY_LABELS = {
+      "Instagram": "Instagram",
+      "Google": "Google",
+      "Indicacao/Parceiro": "Indicacao / Parceiro",
+      "Base/Retorno": "Base / Retorno",
+      "Nao informado": "Nao informado",
+      "Ligacao": "Ligacao",
+    };
+
+    const CATEGORY_COLORS = {
+      "Instagram": "var(--instagram)",
+      "Google": "var(--google)",
+      "Indicacao/Parceiro": "var(--indicacao)",
+      "Base/Retorno": "var(--base)",
+      "Nao informado": "var(--nao-informado)",
+      "Ligacao": "var(--ligacao)",
+    };
+
+    const INITIAL_DATA = [
+      { date: "2026-04-14", category: "Base/Retorno", quantity: 1 },
+      { date: "2026-07-10", category: "Google", quantity: 1 },
+      { date: "2026-07-13", category: "Google", quantity: 3 },
+      { date: "2026-07-13", category: "Indicacao/Parceiro", quantity: 1 },
+      { date: "2026-07-13", category: "Base/Retorno", quantity: 1 },
+      { date: "2026-07-13", category: "Nao informado", quantity: 3 },
+      { date: "2026-07-13", category: "Ligacao", quantity: 1 },
+      { date: "2026-07-14", category: "Google", quantity: 2 },
+      { date: "2026-07-14", category: "Instagram", quantity: 1 },
+      { date: "2026-07-14", category: "Indicacao/Parceiro", quantity: 1 },
+      { date: "2026-07-14", category: "Nao informado", quantity: 1 },
+      { date: "2026-07-15", category: "Instagram", quantity: 2 },
+      { date: "2026-07-16", category: "Google", quantity: 1 },
+      { date: "2026-07-16", category: "Nao informado", quantity: 2 },
+      { date: "2026-07-17", category: "Google", quantity: 5 },
+      { date: "2026-07-17", category: "Base/Retorno", quantity: 2 },
+      { date: "2026-07-17", category: "Nao informado", quantity: 1 },
+      { date: "2026-07-20", category: "Instagram", quantity: 4 },
+      { date: "2026-07-20", category: "Indicacao/Parceiro", quantity: 1 },
+      { date: "2026-07-20", category: "Nao informado", quantity: 1 },
+      { date: "2026-07-21", category: "Google", quantity: 1 },
+      { date: "2026-07-21", category: "Instagram", quantity: 1 },
+      { date: "2026-07-22", category: "Google", quantity: 2 },
+      { date: "2026-07-22", category: "Base/Retorno", quantity: 1 },
+      { date: "2026-07-24", category: "Instagram", quantity: 7 },
+      { date: "2026-07-24", category: "Indicacao/Parceiro", quantity: 1 },
+      { date: "2026-07-27", category: "Instagram", quantity: 6 },
+      { date: "2026-07-27", category: "Nao informado", quantity: 1 },
+      { date: "2026-07-28", category: "Base/Retorno", quantity: 1 },
+      { date: "2026-07-28", category: "Google", quantity: 1 },
+      { date: "2026-07-28", category: "Indicacao/Parceiro", quantity: 1 },
+      { date: "2026-07-28", category: "Instagram", quantity: 1 },
+      { date: "2026-07-29", category: "Google", quantity: 1 },
+      { date: "2026-07-29", category: "Nao informado", quantity: 1 },
+      { date: "2026-07-31", category: "Base/Retorno", quantity: 1 },
+      { date: "2026-07-31", category: "Google", quantity: 1 },
+      { date: "2026-07-31", category: "Nao informado", quantity: 3 }
+    ];
+
+    let rows = INITIAL_DATA.slice();
+    let sourceLabel = "Base inicial importada do PDF";
+    let skippedRows = 0;
+    let sheetCsvUrl = "";
+    let sheetEditUrl = "";
+    let lastSheetSync = "";
+
+    const sourceNode = document.getElementById("source-label");
+    const totalNode = document.getElementById("total-leads");
+    const categoriesNode = document.getElementById("categories-count");
+    const skippedNode = document.getElementById("skipped-rows");
+    const statusNode = document.getElementById("status-line");
+    const periodChart = document.getElementById("period-chart");
+    const totalsChart = document.getElementById("totals-chart");
+    const groupModeSelect = document.getElementById("group-mode");
+    const importModeSelect = document.getElementById("import-mode");
+    const input = document.getElementById("csv-input");
+    const sheetUrlInput = document.getElementById("sheet-url-input");
+
+    function deriveGoogleSheetCsvUrl(value) {
+      const trimmed = String(value || "").trim();
+      if (!trimmed) return { csvUrl: "", editUrl: "" };
+
+      if (trimmed.includes("tqx=out:csv") || trimmed.includes("/export?format=csv")) {
+        return { csvUrl: trimmed, editUrl: trimmed };
+      }
+
+      const match = trimmed.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+      if (!match) return { csvUrl: "", editUrl: trimmed };
+
+      const spreadsheetId = match[1];
+      const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(DEFAULT_SHEET_NAME)}`;
+      const editUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`;
+      return { csvUrl, editUrl };
+    }
+
+    function normalizeHeader(value) {
+      return value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "");
+    }
+
+    function normalizeCategory(value) {
+      const normalized = value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+
+      if (!normalized) return "Nao informado";
+      if (normalized.includes("insta")) return "Instagram";
+      if (normalized.includes("google")) return "Google";
+      if (normalized.includes("indic") || normalized.includes("parceir") || normalized.includes("refer")) return "Indicacao/Parceiro";
+      if (normalized.includes("base") || normalized.includes("retorno") || normalized.includes("reativ")) return "Base/Retorno";
+      if (normalized.includes("liga") || normalized.includes("telefone")) return "Ligacao";
+      if (normalized.includes("nao informado") || normalized.includes("na informado") || normalized.includes("sem origem")) return "Nao informado";
+      return value.trim() || "Nao informado";
+    }
+
+    function parseDateValue(value) {
+      const trimmed = String(value || "").trim();
+      if (!trimmed) return null;
+
+      const iso = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (iso) return trimmed;
+
+      const excelSerial = Number(trimmed);
+      if (Number.isFinite(excelSerial) && excelSerial > 20000 && excelSerial < 60000) {
+        const date = new Date(Math.round((excelSerial - 25569) * 86400 * 1000));
+        if (!Number.isNaN(date.getTime())) {
+          return date.toISOString().slice(0, 10);
+        }
+      }
+
+      const br = trimmed.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+      if (!br) return null;
+
+      const day = Number(br[1]);
+      const month = Number(br[2]);
+      const rawYear = Number(br[3]);
+      const year = rawYear < 100 ? 2000 + rawYear : rawYear;
+
+      if (day < 1 || day > 31 || month < 1 || month > 12) return null;
+
+      return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function parseNumberValue(value) {
+      const parsed = Number(String(value || "").trim().replace(",", "."));
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+    }
+
+    function splitDelimitedLine(line) {
+      const delimiter = line.includes(";") ? ";" : ",";
+      return line.split(delimiter).map((part) => part.trim().replace(/^"|"$/g, ""));
+    }
+
+    function mergeRows(list) {
+      const grouped = new Map();
+
+      list.forEach((row) => {
+        const key = `${row.date}__${row.category}`;
+        grouped.set(key, (grouped.get(key) || 0) + row.quantity);
+      });
+
+      return Array.from(grouped.entries())
+        .map(([key, quantity]) => {
+          const parts = key.split("__");
+          return { date: parts[0], category: parts[1], quantity };
+        })
+        .sort((a, b) => a.date.localeCompare(b.date) || a.category.localeCompare(b.category));
+    }
+
+    function parseRowsFromText(text) {
+      const lines = text
+        .replace(/\r/g, "")
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      if (!lines.length) {
+        return { rows: [], skipped: 0 };
+      }
+
+      const header = splitDelimitedLine(lines[0]).map(normalizeHeader);
+      const dateIndex = header.findIndex((item) => ["data", "periodo", "dia", "date"].includes(item));
+      const categoryIndex = header.findIndex((item) => ["categoria", "classificacao", "origem", "canal", "entradacategoria", "source"].includes(item));
+      const quantityIndex = header.findIndex((item) => ["quantidade", "qtd", "total", "volume"].includes(item));
+
+      if (dateIndex === -1 || categoryIndex === -1) {
+        return { rows: [], skipped: Math.max(lines.length - 1, 0) };
+      }
+
+      let skipped = 0;
+      const imported = [];
+
+      lines.slice(1).forEach((line) => {
+        const parts = splitDelimitedLine(line);
+        const date = parseDateValue(parts[dateIndex]);
+        if (!date) {
+          skipped += 1;
+          return;
+        }
+
+        imported.push({
+          date,
+          category: normalizeCategory(parts[categoryIndex] || ""),
+          quantity: quantityIndex >= 0 ? parseNumberValue(parts[quantityIndex]) : 1
+        });
+      });
+
+      return {
+        rows: mergeRows(imported),
+        skipped
+      };
+    }
+
+    function parseRowsFromMatrix(matrix) {
+      const cleanMatrix = matrix
+        .map((row) => row.map((cell) => String(cell || "").trim()))
+        .filter((row) => row.some(Boolean));
+
+      if (!cleanMatrix.length) {
+        return { rows: [], skipped: 0 };
+      }
+
+      const header = cleanMatrix[0].map(normalizeHeader);
+      const dateIndex = header.findIndex((item) => ["data", "periodo", "dia", "date"].includes(item));
+      const categoryIndex = header.findIndex((item) => ["categoria", "classificacao", "origem", "canal", "entradacategoria", "source"].includes(item));
+      const quantityIndex = header.findIndex((item) => ["quantidade", "qtd", "total", "volume"].includes(item));
+
+      if (dateIndex === -1 || categoryIndex === -1) {
+        return { rows: [], skipped: Math.max(cleanMatrix.length - 1, 0) };
+      }
+
+      let skipped = 0;
+      const imported = [];
+
+      cleanMatrix.slice(1).forEach((row) => {
+        const date = parseDateValue(row[dateIndex]);
+        if (!date) {
+          skipped += 1;
+          return;
+        }
+
+        imported.push({
+          date,
+          category: normalizeCategory(row[categoryIndex] || ""),
+          quantity: quantityIndex >= 0 ? parseNumberValue(row[quantityIndex]) : 1
+        });
+      });
+
+      return {
+        rows: mergeRows(imported),
+        skipped
+      };
+    }
+
+    async function parseRowsFromFile(file) {
+      const name = file.name.toLowerCase();
+      const isExcel = name.endsWith(".xlsx") || name.endsWith(".xls");
+
+      if (!isExcel) {
+        return parseRowsFromText(await file.text());
+      }
+
+      if (!window.XLSX) {
+        return {
+          rows: [],
+          skipped: 0,
+          error: "A biblioteca de leitura XLSX nao carregou. Verifique a conexao com a internet ou exporte a planilha como CSV."
+        };
+      }
+
+      const buffer = await file.arrayBuffer();
+      const workbook = window.XLSX.read(buffer, { type: "array", cellDates: false });
+      const sheetName = workbook.SheetNames.includes(DEFAULT_SHEET_NAME)
+        ? DEFAULT_SHEET_NAME
+        : workbook.SheetNames[0];
+
+      if (!sheetName) {
+        return {
+          rows: [],
+          skipped: 0,
+          error: "O arquivo Excel nao possui abas legiveis."
+        };
+      }
+
+      const matrix = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+        header: 1,
+        raw: false,
+        defval: ""
+      });
+
+      return parseRowsFromMatrix(matrix);
+    }
+
+    function formatDisplayDate(value) {
+      const parts = value.split("-");
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function getWeekStart(value) {
+      const parts = value.split("-").map(Number);
+      const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+      const weekday = date.getUTCDay();
+      const distance = weekday === 0 ? -6 : 1 - weekday;
+      date.setUTCDate(date.getUTCDate() + distance);
+      return `${String(date.getUTCFullYear()).padStart(4, "0")}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+    }
+
+    function getGroupKey(date, mode) {
+      if (mode === "week") return getWeekStart(date);
+      if (mode === "month") return date.slice(0, 7);
+      return date;
+    }
+
+    function getGroupLabel(key, mode) {
+      if (mode === "day") return formatDisplayDate(key);
+      if (mode === "month") return `${key.slice(5, 7)}/${key.slice(0, 4)}`;
+      return `Semana de ${formatDisplayDate(key)}`;
+    }
+
+    function aggregateRows(mode) {
+      const grouped = new Map();
+
+      rows.forEach((row) => {
+        const key = getGroupKey(row.date, mode);
+        const current = grouped.get(key) || { period: key, total: 0, byCategory: {} };
+        current.total += row.quantity;
+        current.byCategory[row.category] = (current.byCategory[row.category] || 0) + row.quantity;
+        grouped.set(key, current);
+      });
+
+      return Array.from(grouped.values()).sort((a, b) => a.period.localeCompare(b.period));
+    }
+
+    function getTotalsByCategory() {
+      const totals = {};
+
+      rows.forEach((row) => {
+        totals[row.category] = (totals[row.category] || 0) + row.quantity;
+      });
+
+      const ordered = CATEGORY_ORDER
+        .filter((category) => totals[category] > 0)
+        .map((category) => ({ category, total: totals[category] }));
+
+      Object.keys(totals)
+        .filter((category) => totals[category] > 0 && !CATEGORY_ORDER.includes(category))
+        .forEach((category) => ordered.push({ category, total: totals[category] }));
+
+      return ordered;
+    }
+
+    function persistState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        rows,
+        sourceLabel,
+        skippedRows,
+        sheetCsvUrl,
+        sheetEditUrl,
+        lastSheetSync
+      }));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed.rows) && parsed.rows.length) {
+          rows = parsed.rows;
+          sourceLabel = parsed.sourceLabel || sourceLabel;
+          skippedRows = parsed.skippedRows || 0;
+          sheetCsvUrl = parsed.sheetCsvUrl || "";
+          sheetEditUrl = parsed.sheetEditUrl || "";
+          lastSheetSync = parsed.lastSheetSync || "";
+        }
+      } catch (error) {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    async function syncFromGoogleSheet(rawUrl, useStatusMessage = true) {
+      const derived = deriveGoogleSheetCsvUrl(rawUrl);
+      if (!derived.csvUrl) {
+        if (useStatusMessage) {
+          setStatus("Nao consegui identificar uma URL valida do Google Sheets. Cole o link da planilha ou o CSV publicado.");
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(derived.csvUrl, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Falha HTTP ${response.status}`);
+        }
+
+        const text = await response.text();
+        const parsed = parseRowsFromText(text);
+        if (!parsed.rows.length) {
+          throw new Error("CSV sem colunas reconheciveis");
+        }
+
+        rows = parsed.rows;
+        skippedRows = parsed.skipped;
+        sheetCsvUrl = derived.csvUrl;
+        sheetEditUrl = derived.editUrl;
+        lastSheetSync = new Date().toISOString();
+        sourceLabel = `Google Sheets sincronizado${lastSheetSync ? ` em ${new Date(lastSheetSync).toLocaleString("pt-BR")}` : ""}`;
+        sheetUrlInput.value = sheetEditUrl || sheetCsvUrl;
+        persistState();
+        render();
+
+        if (useStatusMessage) {
+          setStatus("Planilha conectada com sucesso. O painel agora estÃ¡ usando a base do Google Sheets.");
+        }
+      } catch (error) {
+        if (useStatusMessage) {
+          setStatus("Nao foi possivel ler a planilha pela web. Confirme se a aba Leads_Semanais esta publicada como CSV ou acessivel publicamente.");
+        }
+      }
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadTemplate() {
+      const template = [
+        "data,categoria,quantidade",
+        "27/07/2026,Instagram,6",
+        "27/07/2026,Nao informado,1",
+        "03/08/2026,Google,4",
+        "03/08/2026,Indicacao/Parceiro,2"
+      ].join("\n");
+
+      downloadFile(template, "template-leads-nacapital.csv", "text/csv;charset=utf-8;");
+    }
+
+    function exportCurrentBase() {
+      const csv = [
+        "data,categoria,quantidade",
+        ...rows.map((row) => `${formatDisplayDate(row.date)},${row.category},${row.quantity}`)
+      ].join("\n");
+
+      downloadFile(csv, "base-leads-nacapital.csv", "text/csv;charset=utf-8;");
+    }
+
+    function setStatus(message) {
+      statusNode.textContent = message;
+    }
+
+    function render() {
+      const groupMode = groupModeSelect.value;
+      const aggregated = aggregateRows(groupMode);
+      const totals = getTotalsByCategory();
+      const maxPeriod = Math.max(...aggregated.map((item) => item.total), 1);
+      const maxCategory = Math.max(...totals.map((item) => item.total), 1);
+      const totalLeads = rows.reduce((sum, row) => sum + row.quantity, 0);
+
+      sourceNode.textContent = sourceLabel;
+      totalNode.textContent = String(totalLeads);
+      categoriesNode.textContent = String(totals.length);
+      skippedNode.textContent = String(skippedRows);
+
+      periodChart.innerHTML = "";
+      aggregated.forEach((item) => {
+        const rowNode = document.createElement("div");
+        rowNode.className = "stacked-row";
+
+        const labelNode = document.createElement("div");
+        labelNode.className = "stacked-label";
+        labelNode.innerHTML = `<span>${getGroupLabel(item.period, groupMode)}</span><strong>${item.total}</strong>`;
+
+        const trackNode = document.createElement("div");
+        trackNode.className = "stacked-track";
+
+        Object.keys(item.byCategory).forEach((category) => {
+          const segment = document.createElement("div");
+          segment.className = "stacked-segment";
+          segment.style.width = `${(item.byCategory[category] / maxPeriod) * 100}%`;
+          segment.style.background = CATEGORY_COLORS[category] || "#1d3557";
+          segment.title = `${getGroupLabel(item.period, groupMode)} | ${CATEGORY_LABELS[category] || category}: ${item.byCategory[category]}`;
+          trackNode.appendChild(segment);
+        });
+
+        rowNode.appendChild(labelNode);
+        rowNode.appendChild(trackNode);
+        periodChart.appendChild(rowNode);
+      });
+
+      totalsChart.innerHTML = "";
+      totals.forEach((item) => {
+        const rowNode = document.createElement("div");
+        rowNode.className = "totals-row";
+
+        const labelNode = document.createElement("div");
+        labelNode.className = "totals-label";
+        labelNode.innerHTML = `<span class="dot" style="background:${CATEGORY_COLORS[item.category] || "#1d3557"}"></span><span>${CATEGORY_LABELS[item.category] || item.category}</span>`;
+
+        const barArea = document.createElement("div");
+        barArea.className = "totals-bar-area";
+
+        const barNode = document.createElement("div");
+        barNode.className = "totals-bar";
+        barNode.style.width = `${(item.total / maxCategory) * 100}%`;
+        barNode.style.background = CATEGORY_COLORS[item.category] || "#1d3557";
+
+        const valueNode = document.createElement("strong");
+        valueNode.textContent = String(item.total);
+
+        barArea.appendChild(barNode);
+        barArea.appendChild(valueNode);
+        rowNode.appendChild(labelNode);
+        rowNode.appendChild(barArea);
+        totalsChart.appendChild(rowNode);
+      });
+    }
+
+    document.getElementById("upload-trigger").addEventListener("click", () => input.click());
+    document.getElementById("template-button").addEventListener("click", downloadTemplate);
+    document.getElementById("export-button").addEventListener("click", exportCurrentBase);
+    document.getElementById("reset-button").addEventListener("click", () => {
+      rows = INITIAL_DATA.slice();
+      sourceLabel = "Base inicial importada do PDF";
+      skippedRows = 0;
+      persistState();
+      setStatus("Base restaurada para o consolidado inicial.");
+      render();
+    });
+
+    groupModeSelect.addEventListener("change", render);
+
+    input.addEventListener("change", async (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const parsed = await parseRowsFromFile(file);
+
+      if (!parsed.rows.length) {
+        skippedRows = parsed.skipped;
+        sourceLabel = `Nao foi possivel ler ${file.name}`;
+        setStatus(parsed.error || "O arquivo nao tinha colunas reconheciveis. Use pelo menos data e categoria.");
+        render();
+        return;
+      }
+
+      skippedRows = parsed.skipped;
+      sourceLabel = `Planilha carregada: ${file.name}`;
+      rows = importModeSelect.value === "append"
+        ? mergeRows(rows.concat(parsed.rows))
+        : parsed.rows;
+
+      persistState();
+      setStatus(`Base atualizada com ${parsed.rows.length} linhas consolidadas a partir de ${file.name}.`);
+      render();
+      input.value = "";
+    });
+
+    document.getElementById("connect-sheet-button").addEventListener("click", async () => {
+      await syncFromGoogleSheet(sheetUrlInput.value, true);
+    });
+
+    document.getElementById("use-default-sheet-button").addEventListener("click", async () => {
+      sheetUrlInput.value = DEFAULT_SHEET_EDIT_URL;
+      await syncFromGoogleSheet(DEFAULT_SHEET_EDIT_URL, true);
+    });
+
+    document.getElementById("disconnect-sheet-button").addEventListener("click", () => {
+      rows = INITIAL_DATA.slice();
+      sourceLabel = "Base local restaurada";
+      skippedRows = 0;
+      sheetCsvUrl = "";
+      sheetEditUrl = "";
+      lastSheetSync = "";
+      persistState();
+      setStatus("Conexao com Google Sheets removida. O painel voltou para a base local.");
+      render();
+    });
+
+    loadState();
+    if (sheetEditUrl || sheetCsvUrl) {
+      sheetUrlInput.value = sheetEditUrl || sheetCsvUrl;
+    }
+    render();
+    if (sheetCsvUrl) {
+      syncFromGoogleSheet(sheetCsvUrl, false);
+    }
   </script>
 </body>
 </html>
