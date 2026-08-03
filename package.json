@@ -6,7 +6,10 @@
   "scripts": {
     "check": "node --check src/server.js",
     "dev": "node --watch src/server.js",
+    "kommo:sync-structure": "node scripts/kommo-structure-sync.mjs",
+    "launch:indicacao": "node scripts/launch-indicacao-campaign.mjs",
     "smoke": "node scripts/smoke-test.mjs",
+    "test:indicacao": "node scripts/test-indicacao-bot.mjs",
     "validate:deploy": "node scripts/deploy-validation.mjs",
     "start": "node src/server.js"
   },
