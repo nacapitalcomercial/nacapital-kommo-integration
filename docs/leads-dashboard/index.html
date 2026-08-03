@@ -7,7 +7,7 @@
   <style>
     :root {
       --bg: #f4efe5;
-      --panel: rgba(255, 251, 245, 0.88);
+      --panel: rgba(255, 251, 245, 0.9);
       --border: rgba(21, 36, 64, 0.12);
       --text: #152440;
       --muted: #5d6779;
@@ -434,8 +434,8 @@
     <section class="card hero">
       <div class="hero-copy">
         <span class="eyebrow">NaCapital</span>
-        <h1>Painel dinÃ¢mico de leads</h1>
-        <p>Este painel recebe uma planilha semanal exportada do Excel em CSV e transforma a base em leitura por perÃ­odo e por categoria de entrada. A base inicial jÃ¡ vem preenchida com o relatÃ³rio consolidado de 27/07/2026.</p>
+        <h1>Painel dinâmico de leads</h1>
+        <p>Este painel recebe uma planilha semanal exportada do Excel em CSV e transforma a base em leitura por período e por categoria de entrada. A base inicial já vem preenchida com o relatório consolidado de 27/07/2026.</p>
       </div>
 
       <div class="hero-actions">
@@ -470,18 +470,18 @@
       <div class="panel-header">
         <div>
           <span class="section-label">Google Sheets</span>
-          <h2>SincronizaÃ§Ã£o da base</h2>
+          <h2>Sincronização da base</h2>
         </div>
       </div>
 
       <div class="sync-grid">
         <label>
-          <span>URL pÃºblica da aba `Leads_Semanais`</span>
+          <span>URL pública da aba `Leads_Semanais`</span>
           <input
             class="sheet-input"
             id="sheet-url-input"
             type="text"
-            placeholder="Cole a URL de ediÃ§Ã£o da planilha ou a URL CSV publicada"
+            placeholder="Cole a URL de edição da planilha ou a URL CSV publicada"
           >
         </label>
 
@@ -493,7 +493,7 @@
       </div>
 
       <div class="helper-text">
-        O painel consegue converter automaticamente um link de ediÃ§Ã£o do Google Sheets em URL CSV da aba principal. Para o site funcionar na web, a planilha precisa estar publicada ou acessÃ­vel publicamente nessa saÃ­da CSV.
+        O painel consegue converter automaticamente um link de edição do Google Sheets em URL CSV da aba principal. Para o site funcionar na web, a planilha precisa estar publicada ou acessível publicamente nessa saída CSV.
       </div>
     </section>
 
@@ -502,7 +502,7 @@
         <div class="panel-header">
           <div>
             <span class="section-label">Leitura temporal</span>
-            <h2>Leads por perÃ­odo</h2>
+            <h2>Leads por período</h2>
           </div>
 
           <div class="controls">
@@ -512,15 +512,15 @@
                 <select id="group-mode">
                   <option value="day">Dia</option>
                   <option value="week">Semana</option>
-                  <option value="month">MÃªs</option>
+                  <option value="month">Mês</option>
                 </select>
               </label>
 
               <label>
-                <span>Modo de importaÃ§Ã£o</span>
+                <span>Modo de importação</span>
                 <select id="import-mode">
                   <option value="replace">Substituir base</option>
-                  <option value="append">Somar Ã  base atual</option>
+                  <option value="append">Somar à base atual</option>
                 </select>
               </label>
             </div>
@@ -552,12 +552,12 @@
 
       <div class="note-grid">
         <div class="card note-card">
-          <strong>Colunas mÃ­nimas</strong>
+          <strong>Colunas mínimas</strong>
           <p>`data` e `categoria`.</p>
         </div>
         <div class="card note-card">
           <strong>Coluna opcional</strong>
-          <p>`quantidade`, quando a planilha jÃ¡ vier consolidada.</p>
+          <p>`quantidade`, quando a planilha já vier consolidada.</p>
         </div>
         <div class="card note-card">
           <strong>Campos equivalentes</strong>
@@ -578,7 +578,7 @@
         </div>
         <div class="template-row">
           <span>27/07/2026</span>
-          <span>Nao informado</span>
+          <span>Não informado</span>
           <span>1</span>
         </div>
         <div class="template-row">
@@ -588,13 +588,13 @@
         </div>
       </div>
 
-      <div class="status-line" id="status-line">Use planilhas XLSX ou CSV exportadas do Excel. Para arquivos XLSX, o painel procura a aba Leads_Semanais ou usa a primeira aba disponivel.</div>
+      <div class="status-line" id="status-line">Use planilhas XLSX ou CSV exportadas do Excel. Para arquivos XLSX, o painel procura a aba Leads_Semanais ou usa a primeira aba disponível.</div>
     </section>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE_KEY = "nacapital-leads-dashboard-static-v2";
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v3";
     const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
     const DEFAULT_SHEET_NAME = "Leads_Semanais";
     const CATEGORY_ORDER = [
@@ -609,10 +609,10 @@
     const CATEGORY_LABELS = {
       "Instagram": "Instagram",
       "Google": "Google",
-      "Indicacao/Parceiro": "Indicacao / Parceiro",
+      "Indicacao/Parceiro": "Indicação / Parceiro",
       "Base/Retorno": "Base / Retorno",
-      "Nao informado": "Nao informado",
-      "Ligacao": "Ligacao",
+      "Nao informado": "Não informado",
+      "Ligacao": "Ligação",
     };
 
     const CATEGORY_COLORS = {
@@ -740,7 +740,7 @@
         }
       }
 
-      const br = trimmed.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+      const br = trimmed.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
       if (!br) return null;
 
       const day = Number(br[1]);
@@ -876,7 +876,7 @@
         return {
           rows: [],
           skipped: 0,
-          error: "A biblioteca de leitura XLSX nao carregou. Verifique a conexao com a internet ou exporte a planilha como CSV."
+          error: "A biblioteca de leitura XLSX não carregou. Verifique a conexão com a internet ou exporte a planilha como CSV."
         };
       }
 
@@ -890,7 +890,7 @@
         return {
           rows: [],
           skipped: 0,
-          error: "O arquivo Excel nao possui abas legiveis."
+          error: "O arquivo Excel não possui abas legíveis."
         };
       }
 
@@ -995,7 +995,7 @@
       const derived = deriveGoogleSheetCsvUrl(rawUrl);
       if (!derived.csvUrl) {
         if (useStatusMessage) {
-          setStatus("Nao consegui identificar uma URL valida do Google Sheets. Cole o link da planilha ou o CSV publicado.");
+          setStatus("Não consegui identificar uma URL válida do Google Sheets. Cole o link da planilha ou o CSV publicado.");
         }
         return;
       }
@@ -1009,7 +1009,7 @@
         const text = await response.text();
         const parsed = parseRowsFromText(text);
         if (!parsed.rows.length) {
-          throw new Error("CSV sem colunas reconheciveis");
+          throw new Error("CSV sem colunas reconhecíveis");
         }
 
         rows = parsed.rows;
@@ -1023,11 +1023,11 @@
         render();
 
         if (useStatusMessage) {
-          setStatus("Planilha conectada com sucesso. O painel agora estÃ¡ usando a base do Google Sheets.");
+          setStatus("Planilha conectada com sucesso. O painel agora está usando a base do Google Sheets.");
         }
       } catch (error) {
         if (useStatusMessage) {
-          setStatus("Nao foi possivel ler a planilha pela web. Confirme se a aba Leads_Semanais esta publicada como CSV ou acessivel publicamente.");
+          setStatus("Não foi possível ler a planilha pela web. Confirme se a aba Leads_Semanais está publicada como CSV ou acessível publicamente.");
         }
       }
     }
@@ -1156,8 +1156,8 @@
 
       if (!parsed.rows.length) {
         skippedRows = parsed.skipped;
-        sourceLabel = `Nao foi possivel ler ${file.name}`;
-        setStatus(parsed.error || "O arquivo nao tinha colunas reconheciveis. Use pelo menos data e categoria.");
+        sourceLabel = `Não foi possível ler ${file.name}`;
+        setStatus(parsed.error || "O arquivo não tinha colunas reconhecíveis. Use pelo menos data e categoria.");
         render();
         return;
       }
@@ -1191,7 +1191,7 @@
       sheetEditUrl = "";
       lastSheetSync = "";
       persistState();
-      setStatus("Conexao com Google Sheets removida. O painel voltou para a base local.");
+      setStatus("Conexão com Google Sheets removida. O painel voltou para a base local.");
       render();
     });
 
