@@ -29,16 +29,12 @@ export async function processEvent(event, kommo) {
   };
 
   if (shouldLaunchIndicacaoBot(event)) {
-    await kommo.launchBot({
-      botId: config.salesbots.indicacaoBotId,
-      entityId: event.leadId,
-      entityType: "leads"
+    await launchIndicacaoBotFlow({
+      kommo,
+      leadId: event.leadId,
+      noteText:
+        "Salesbot de campanha de indicacao disparado automaticamente ao entrar na etapa Campanha de indicacao."
     });
-
-    await kommo.addLeadNote(
-      event.leadId,
-      "Salesbot de campanha de indicacao disparado automaticamente ao entrar na etapa Campanha de indicacao."
-    );
 
     plan.actions.push({
       type: "salesbot_launched",
@@ -212,6 +208,24 @@ export async function processEvent(event, kommo) {
   }
 
   return plan;
+}
+
+export async function launchIndicacaoBotFlow({ kommo, leadId, noteText }) {
+  if (!leadId || !config.salesbots.indicacaoBotId) {
+    return false;
+  }
+
+  await kommo.launchBot({
+    botId: config.salesbots.indicacaoBotId,
+    entityId: leadId,
+    entityType: "leads"
+  });
+
+  if (noteText) {
+    await kommo.addLeadNote(leadId, noteText);
+  }
+
+  return true;
 }
 
 async function createEntryAutomation({
