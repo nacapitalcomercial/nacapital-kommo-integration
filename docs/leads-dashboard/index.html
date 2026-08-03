@@ -55,7 +55,8 @@
     .hero,
     .content-grid,
     .meta-grid,
-    .note-grid {
+    .note-grid,
+    .funnel-grid {
       display: grid;
       gap: 18px;
     }
@@ -178,6 +179,11 @@
       margin-top: 18px;
     }
 
+    .funnel-grid {
+      grid-template-columns: 1fr;
+      margin-top: 18px;
+    }
+
     .panel-header {
       display: flex;
       align-items: flex-start;
@@ -228,6 +234,11 @@
       gap: 14px;
     }
 
+    .funnel-chart {
+      display: grid;
+      gap: 14px;
+    }
+
     .stacked-row,
     .totals-row {
       display: grid;
@@ -267,6 +278,48 @@
     .totals-row {
       grid-template-columns: minmax(0, 180px) 1fr;
       align-items: center;
+    }
+
+    .funnel-row {
+      display: grid;
+      grid-template-columns: minmax(0, 220px) 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .funnel-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .funnel-label strong {
+      font-size: 1rem;
+    }
+
+    .funnel-track {
+      min-height: 20px;
+      border-radius: 999px;
+      background: rgba(21, 36, 64, 0.08);
+      overflow: hidden;
+    }
+
+    .funnel-bar {
+      min-height: 20px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent) 0%, #f4aa64 100%);
+    }
+
+    .funnel-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .funnel-note {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
     .totals-label {
@@ -387,6 +440,7 @@
       .content-grid,
       .meta-grid,
       .note-grid,
+      .funnel-grid,
       .sync-grid {
         grid-template-columns: 1fr;
       }
@@ -418,6 +472,7 @@
 
       .stacked-row,
       .totals-row,
+      .funnel-row,
       .template-row,
       .sync-actions {
         grid-template-columns: 1fr;
@@ -539,6 +594,22 @@
         </div>
 
         <div class="totals-chart" id="totals-chart"></div>
+      </article>
+    </section>
+
+    <section class="funnel-grid">
+      <article class="card panel-card">
+        <div class="panel-header">
+          <div>
+            <span class="section-label">Conversão comercial</span>
+            <h2>Funil de visita a contrato</h2>
+          </div>
+        </div>
+
+        <div class="funnel-chart" id="funnel-chart"></div>
+        <p class="funnel-note" id="funnel-note">
+          Base lida do PDF Book 6 (2): 7 visitas identificadas, 5 propostas enviadas e 4 contratos fechados.
+        </p>
       </article>
     </section>
 
@@ -664,6 +735,27 @@
       { date: "2026-07-31", category: "Nao informado", quantity: 3 }
     ];
 
+    const FUNNEL_STAGES = [
+      {
+        key: "visitas",
+        label: "Fizeram visita",
+        detail: "Leads que avançaram para conhecer o espaço",
+        total: 7
+      },
+      {
+        key: "propostas",
+        label: "Propostas enviadas",
+        detail: "Leads com proposta comercial registrada",
+        total: 5
+      },
+      {
+        key: "contratos",
+        label: "Contratos fechados",
+        detail: "Leads convertidos em contrato",
+        total: 4
+      }
+    ];
+
     let rows = INITIAL_DATA.slice();
     let sourceLabel = "Base inicial importada do PDF";
     let skippedRows = 0;
@@ -678,6 +770,7 @@
     const statusNode = document.getElementById("status-line");
     const periodChart = document.getElementById("period-chart");
     const totalsChart = document.getElementById("totals-chart");
+    const funnelChart = document.getElementById("funnel-chart");
     const groupModeSelect = document.getElementById("group-mode");
     const importModeSelect = document.getElementById("import-mode");
     const input = document.getElementById("csv-input");
@@ -1071,6 +1164,7 @@
       const groupMode = groupModeSelect.value;
       const aggregated = aggregateRows(groupMode);
       const totals = getTotalsByCategory();
+      const maxFunnel = Math.max(...FUNNEL_STAGES.map((item) => item.total), 1);
       const maxPeriod = Math.max(...aggregated.map((item) => item.total), 1);
       const maxCategory = Math.max(...totals.map((item) => item.total), 1);
       const totalLeads = rows.reduce((sum, row) => sum + row.quantity, 0);
@@ -1131,6 +1225,33 @@
         rowNode.appendChild(labelNode);
         rowNode.appendChild(barArea);
         totalsChart.appendChild(rowNode);
+      });
+
+      funnelChart.innerHTML = "";
+      FUNNEL_STAGES.forEach((item) => {
+        const rowNode = document.createElement("div");
+        rowNode.className = "funnel-row";
+
+        const labelNode = document.createElement("div");
+        labelNode.className = "funnel-label";
+        labelNode.innerHTML = `<strong>${item.label}</strong><span>${item.detail}</span>`;
+
+        const trackNode = document.createElement("div");
+        trackNode.className = "funnel-track";
+
+        const barNode = document.createElement("div");
+        barNode.className = "funnel-bar";
+        barNode.style.width = `${(item.total / maxFunnel) * 100}%`;
+        trackNode.appendChild(barNode);
+
+        const valueNode = document.createElement("div");
+        valueNode.className = "funnel-value";
+        valueNode.textContent = String(item.total);
+
+        rowNode.appendChild(labelNode);
+        rowNode.appendChild(trackNode);
+        rowNode.appendChild(valueNode);
+        funnelChart.appendChild(rowNode);
       });
     }
 
