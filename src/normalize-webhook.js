@@ -55,6 +55,28 @@ export function normalizeWebhook(body) {
     raw: payload,
     leadId: leadId ? Number(leadId) : null,
     contactId: contactId ? Number(contactId) : null,
+    pipelineId: firstNumber([
+      payload.lead?.pipeline_id,
+      payload.leads?.add?.[0]?.pipeline_id,
+      payload.leads?.update?.[0]?.pipeline_id,
+      payload.entity?.pipeline_id
+    ]),
+    statusId: firstNumber([
+      payload.lead?.status_id,
+      payload.leads?.add?.[0]?.status_id,
+      payload.leads?.update?.[0]?.status_id,
+      payload.entity?.status_id
+    ]),
+    oldPipelineId: firstNumber([
+      payload.leads?.update?.[0]?.old_pipeline_id,
+      payload.leads?.status?.[0]?.old_pipeline_id,
+      payload.entity?.old_pipeline_id
+    ]),
+    oldStatusId: firstNumber([
+      payload.leads?.update?.[0]?.old_status_id,
+      payload.leads?.status?.[0]?.old_status_id,
+      payload.entity?.old_status_id
+    ]),
     messageText,
     phone,
     email,
@@ -65,6 +87,38 @@ export function normalizeWebhook(body) {
       payload.chat?.source,
       payload.message?.channel?.type,
       "kommo"
+    ]),
+    channel: firstNonEmpty([
+      payload.channel,
+      payload.message?.channel?.name,
+      payload.message?.channel?.type,
+      payload.utm?.source,
+      payload.source
+    ]),
+    campaign: firstNonEmpty([
+      payload.campaign,
+      payload.utm?.campaign,
+      payload.message?.campaign
+    ]),
+    adset: firstNonEmpty([
+      payload.adset,
+      payload.utm?.adset,
+      payload.message?.adset
+    ]),
+    ad: firstNonEmpty([
+      payload.ad,
+      payload.utm?.ad,
+      payload.message?.ad
+    ]),
+    keyword: firstNonEmpty([
+      payload.keyword,
+      payload.utm?.term,
+      payload.message?.keyword
+    ]),
+    unit: firstNonEmpty([
+      payload.unit,
+      payload.unidade,
+      payload.message?.unit
     ]),
     eventType: payload.event_type || payload.type || detectEventType(payload)
   };
@@ -88,6 +142,11 @@ function detectEventType(payload) {
 
 function firstNonEmpty(values) {
   return values.find((value) => value != null && value !== "") || "";
+}
+
+function firstNumber(values) {
+  const value = values.find((item) => item != null && item !== "");
+  return value != null && value !== "" ? Number(value) : null;
 }
 
 function normalizePhone(phone) {
