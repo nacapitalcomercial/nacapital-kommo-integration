@@ -270,7 +270,8 @@
     }
 
     .stacked-segment,
-    .totals-bar {
+    .totals-bar,
+    .funnel-segment {
       min-width: 10px;
       border-radius: 999px;
     }
@@ -304,12 +305,6 @@
       overflow: hidden;
     }
 
-    .funnel-bar {
-      min-height: 20px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent) 0%, #f4aa64 100%);
-    }
-
     .funnel-value {
       font-size: 1.05rem;
       font-weight: 700;
@@ -320,6 +315,21 @@
       margin-top: 10px;
       color: var(--muted);
       line-height: 1.7;
+    }
+
+    .funnel-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .funnel-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .totals-label {
@@ -607,6 +617,7 @@
         </div>
 
         <div class="funnel-chart" id="funnel-chart"></div>
+        <div class="funnel-legend" id="funnel-legend"></div>
         <p class="funnel-note" id="funnel-note">
           Base lida do PDF Book 6 (2): 7 visitas identificadas, 5 propostas enviadas e 4 contratos fechados.
         </p>
@@ -740,19 +751,33 @@
         key: "visitas",
         label: "Fizeram visita",
         detail: "Leads que avançaram para conhecer o espaço",
-        total: 7
+        total: 7,
+        byCategory: {
+          "Google": 3,
+          "Base/Retorno": 3,
+          "Indicacao/Parceiro": 1
+        }
       },
       {
         key: "propostas",
         label: "Propostas enviadas",
         detail: "Leads com proposta comercial registrada",
-        total: 5
+        total: 5,
+        byCategory: {
+          "Google": 1,
+          "Base/Retorno": 3,
+          "Indicacao/Parceiro": 1
+        }
       },
       {
         key: "contratos",
         label: "Contratos fechados",
         detail: "Leads convertidos em contrato",
-        total: 4
+        total: 4,
+        byCategory: {
+          "Base/Retorno": 3,
+          "Indicacao/Parceiro": 1
+        }
       }
     ];
 
@@ -771,6 +796,7 @@
     const periodChart = document.getElementById("period-chart");
     const totalsChart = document.getElementById("totals-chart");
     const funnelChart = document.getElementById("funnel-chart");
+    const funnelLegend = document.getElementById("funnel-legend");
     const groupModeSelect = document.getElementById("group-mode");
     const importModeSelect = document.getElementById("import-mode");
     const input = document.getElementById("csv-input");
@@ -1239,10 +1265,15 @@
         const trackNode = document.createElement("div");
         trackNode.className = "funnel-track";
 
-        const barNode = document.createElement("div");
-        barNode.className = "funnel-bar";
-        barNode.style.width = `${(item.total / maxFunnel) * 100}%`;
-        trackNode.appendChild(barNode);
+        const usedWidth = (item.total / maxFunnel) * 100;
+        Object.keys(item.byCategory).forEach((category) => {
+          const segmentNode = document.createElement("div");
+          segmentNode.className = "funnel-segment";
+          segmentNode.style.width = `${(item.byCategory[category] / item.total) * usedWidth}%`;
+          segmentNode.style.background = CATEGORY_COLORS[category] || "#1d3557";
+          segmentNode.title = `${item.label} | ${CATEGORY_LABELS[category] || category}: ${item.byCategory[category]}`;
+          trackNode.appendChild(segmentNode);
+        });
 
         const valueNode = document.createElement("div");
         valueNode.className = "funnel-value";
@@ -1252,6 +1283,14 @@
         rowNode.appendChild(trackNode);
         rowNode.appendChild(valueNode);
         funnelChart.appendChild(rowNode);
+      });
+
+      funnelLegend.innerHTML = "";
+      ["Google", "Base/Retorno", "Indicacao/Parceiro"].forEach((category) => {
+        const itemNode = document.createElement("div");
+        itemNode.className = "funnel-legend-item";
+        itemNode.innerHTML = `<span class="dot" style="background:${CATEGORY_COLORS[category] || "#1d3557"}"></span><span>${CATEGORY_LABELS[category] || category}</span>`;
+        funnelLegend.appendChild(itemNode);
       });
     }
 
