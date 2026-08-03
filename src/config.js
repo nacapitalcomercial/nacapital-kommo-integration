@@ -76,6 +76,10 @@ export const config = {
     sdrRoundRobinIds: optionalList("SDR_ROUND_ROBIN_USER_IDS"),
     closerRoundRobinIds: optionalList("CLOSER_ROUND_ROBIN_USER_IDS")
   },
+  salesbots: {
+    indicacaoBotId: optionalNumber("SALESBOT_INDICACAO_BOT_ID"),
+    indicacaoStageId: optionalNumber("STAGE_ORGANIZACAO_CAMPANHA_INDICACAO_ID")
+  },
   stages: {
     triagemNovoLead: optionalNumber("STAGE_TRIAGEM_NOVO_LEAD_ID"),
     triagemQualificacao: optionalNumber("STAGE_TRIAGEM_QUALIFICACAO_ID"),
