@@ -270,8 +270,7 @@
     }
 
     .stacked-segment,
-    .totals-bar,
-    .funnel-segment {
+    .totals-bar {
       min-width: 10px;
       border-radius: 999px;
     }
@@ -303,6 +302,12 @@
       border-radius: 999px;
       background: rgba(21, 36, 64, 0.08);
       overflow: hidden;
+    }
+
+    .funnel-fill {
+      display: block;
+      min-height: 20px;
+      border-radius: 999px;
     }
 
     .funnel-value {
@@ -1265,15 +1270,23 @@
         const trackNode = document.createElement("div");
         trackNode.className = "funnel-track";
 
-        const usedWidth = (item.total / maxFunnel) * 100;
-        Object.keys(item.byCategory).forEach((category) => {
-          const segmentNode = document.createElement("div");
-          segmentNode.className = "funnel-segment";
-          segmentNode.style.width = `${(item.byCategory[category] / item.total) * usedWidth}%`;
-          segmentNode.style.background = CATEGORY_COLORS[category] || "#1d3557";
-          segmentNode.title = `${item.label} | ${CATEGORY_LABELS[category] || category}: ${item.byCategory[category]}`;
-          trackNode.appendChild(segmentNode);
+        const fillNode = document.createElement("div");
+        fillNode.className = "funnel-fill";
+        fillNode.style.width = `${(item.total / maxFunnel) * 100}%`;
+
+        let cursor = 0;
+        const gradientStops = Object.keys(item.byCategory).map((category) => {
+          const start = cursor;
+          cursor += (item.byCategory[category] / item.total) * 100;
+          const color = CATEGORY_COLORS[category] || "#1d3557";
+          return `${color} ${start}% ${cursor}%`;
         });
+
+        fillNode.style.background = `linear-gradient(90deg, ${gradientStops.join(", ")})`;
+        fillNode.title = Object.keys(item.byCategory)
+          .map((category) => `${CATEGORY_LABELS[category] || category}: ${item.byCategory[category]}`)
+          .join(" | ");
+        trackNode.appendChild(fillNode);
 
         const valueNode = document.createElement("div");
         valueNode.className = "funnel-value";
