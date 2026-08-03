@@ -50,7 +50,8 @@ export class KommoClient {
       return null;
     }
 
-    return response.json();
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
   }
 
   async getAccount() {
@@ -174,6 +175,23 @@ export class KommoClient {
         {
           to_entity_id: contactId,
           to_entity_type: "contacts"
+        }
+      ])
+    });
+  }
+
+  async launchBot({ botId, entityId, entityType = "leads" }) {
+    if (!botId || !entityId) {
+      return null;
+    }
+
+    return this.request("/bots/run", {
+      method: "POST",
+      body: JSON.stringify([
+        {
+          bot_id: botId,
+          entity_id: entityId,
+          entity_type: entityType
         }
       ])
     });
