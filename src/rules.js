@@ -28,6 +28,24 @@ export async function processEvent(event, kommo) {
     followups: []
   };
 
+  if (shouldLaunchIndicacaoBot(event)) {
+    await kommo.launchBot({
+      botId: config.salesbots.indicacaoBotId,
+      entityId: event.leadId,
+      entityType: "leads"
+    });
+
+    await kommo.addLeadNote(
+      event.leadId,
+      "Salesbot de campanha de indicacao disparado automaticamente ao entrar na etapa Campanha de indicacao."
+    );
+
+    plan.actions.push({
+      type: "salesbot_launched",
+      botId: config.salesbots.indicacaoBotId
+    });
+  }
+
   if (!event.leadId && product) {
     const contact = await kommo.findOrCreateContact({
       name: event.contactName,
@@ -95,20 +113,22 @@ export async function processEvent(event, kommo) {
     return plan;
   }
 
-  const attachedContact = await kommo.ensureLeadContact({
-    leadId: event.leadId,
-    existingContactId: event.contactId,
-    name: event.contactName,
-    phone: event.phone,
-    email: event.email,
-    source: event.source
-  });
-
-  if (attachedContact?.id) {
-    plan.actions.push({
-      type: "contact_ensured",
-      contactId: attachedContact.id
+  if (shouldEnsureLeadContact(event)) {
+    const attachedContact = await kommo.ensureLeadContact({
+      leadId: event.leadId,
+      existingContactId: event.contactId,
+      name: event.contactName,
+      phone: event.phone,
+      email: event.email,
+      source: event.source
     });
+
+    if (attachedContact?.id) {
+      plan.actions.push({
+        type: "contact_ensured",
+        contactId: attachedContact.id
+      });
+    }
   }
 
   plan.leadId = event.leadId;
@@ -750,4 +770,31 @@ function buildFollowupTaskText({ routingMode, productName, minutes }) {
   }
 
   return `Executar follow-up comercial em ${cadence} e tentar nova resposta ${scope}.`;
+}
+
+function shouldLaunchIndicacaoBot(event) {
+  return (
+    event.eventType === "lead_updated" &&
+    Boolean(event.leadId) &&
+    Boolean(config.salesbots.indicacaoBotId) &&
+    Boolean(config.salesbots.indicacaoStageId) &&
+    Number(event.statusId) === Number(config.salesbots.indicacaoStageId) &&
+    Number(event.oldStatusId || 0) !== Number(config.salesbots.indicacaoStageId)
+  );
+}
+
+function shouldEnsureLeadContact(event) {
+  if (event.contactId) {
+    return true;
+  }
+
+  if (event.phone || event.email) {
+    return true;
+  }
+
+  if (event.contactName && event.contactName !== "Lead sem nome") {
+    return true;
+  }
+
+  return false;
 }
