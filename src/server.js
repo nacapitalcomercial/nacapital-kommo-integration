@@ -6,7 +6,7 @@ import { FollowupScheduler } from "./modules/followup/followup-scheduler.js";
 import { EventStore } from "./modules/persistence/event-store.js";
 import { MetricsService } from "./modules/reporting/metrics-service.js";
 import { normalizeWebhook } from "./normalize-webhook.js";
-import { processEvent } from "./rules.js";
+import { launchIndicacaoBotFlow, processEvent } from "./rules.js";
 import { WebhookGuard } from "./webhook-guard.js";
 
 const app = express();
@@ -159,6 +159,78 @@ app.post("/simulate/message", async (req, res) => {
   } catch (err) {
     error("Simulation failed", { requestId, err });
     res.status(500).json({ ok: false, requestId, error: err.message });
+  }
+});
+
+app.post("/campaigns/indicacao/launch", async (req, res) => {
+  const requestId = webhookGuard.buildRequestId(req.headers);
+
+  try {
+    const secret = req.header("x-kommo-secret");
+    if (config.kommo.webhookSecret && secret !== config.kommo.webhookSecret) {
+      return res.status(401).json({ ok: false, error: "Invalid webhook secret", requestId });
+    }
+
+    const leadIds = Array.isArray(req.body?.leadIds)
+      ? req.body.leadIds.map((item) => Number(item)).filter((item) => Number.isFinite(item) && item > 0)
+      : [];
+    const moveToStage = req.body?.moveToStage !== false;
+
+    if (leadIds.length === 0) {
+      return res.status(400).json({
+        ok: false,
+        requestId,
+        error: "leadIds must be a non-empty array"
+      });
+    }
+
+    if (moveToStage && (!config.pipelines.organizacao || !config.salesbots.indicacaoStageId)) {
+      return res.status(400).json({
+        ok: false,
+        requestId,
+        error: "Missing ORGANIZACAO pipeline or Campanha de indicacao stage configuration"
+      });
+    }
+
+    const results = [];
+
+    for (const leadId of leadIds) {
+      if (moveToStage) {
+        await kommo.updateLead(leadId, {
+          pipeline_id: config.pipelines.organizacao,
+          status_id: config.salesbots.indicacaoStageId
+        });
+      }
+
+      await launchIndicacaoBotFlow({
+        kommo,
+        leadId,
+        noteText:
+          "Salesbot de campanha de indicacao disparado manualmente pela API da integracao."
+      });
+
+      results.push({
+        leadId,
+        movedToStage: moveToStage,
+        botLaunched: true
+      });
+    }
+
+    log("Indicacao campaign launched manually", {
+      requestId,
+      leadIds,
+      moveToStage
+    });
+
+    return res.json({
+      ok: true,
+      requestId,
+      campaign: "indicacao",
+      results
+    });
+  } catch (err) {
+    error("Indicacao campaign launch failed", { requestId, err });
+    return res.status(500).json({ ok: false, requestId, error: err.message });
   }
 });
 
