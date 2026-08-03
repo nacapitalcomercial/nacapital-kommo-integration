@@ -9,12 +9,19 @@ Base inicial para automatizar o fluxo comercial da NaCapital via API do Kommo.
 - conecta na CRM API v4 com long-lived token
 - identifica interesse por produto a partir de texto
 - normaliza texto com acentos e variacoes comuns do WhatsApp
-- roteia leads para o pipeline correto
+- classifica entrada como inbound, midia paga ou SDR outbound
+- roteia leads para Funil de vendas, PROSPECCAO ou pipeline especialista
 - cria ou reaproveita contato antes de vincular ao lead
+- grava contexto comercial quando os campos ja existirem no Kommo
 - automatiza o fluxo inicial de Escritorio Virtual
 - automatiza fluxos iniciais de Avulsos, Eventos, Residencia e Coworking
+- distribui SDRs e closers por round-robin quando os IDs forem configurados
 - cria tarefas internas quando o lead quer contratar, falar com o time, agendar visita ou fechar
+- cria tarefas de SLA para resposta inicial e retomada de inbound
 - registra notas automaticas no lead
+- agenda follow-ups reais em camada de scheduler local
+- grava eventos e follow-ups em armazenamento local para auditoria simples
+- expoe metricas operacionais por endpoint
 
 ## Estrutura
 
@@ -24,6 +31,10 @@ src/
   keywords.js
   kommo-client.js
   logger.js
+  modules/
+    followup/
+    persistence/
+    reporting/
   normalize-webhook.js
   rules.js
   server.js
@@ -38,6 +49,30 @@ src/
    - `PUBLIC_WEBHOOK_URL`
    - `KOMMO_REDIRECT_URI`
 3. Revise se os IDs preenchidos continuam corretos.
+4. Se quiser alterar cadencia e retencao local, ajuste:
+   - `DATA_STORE_PATH`
+   - `FOLLOWUP_POLL_MS`
+   - `INBOUND_FOLLOWUP_MINUTES`
+   - `OUTBOUND_FOLLOWUP_MINUTES`
+   - `METRICS_RECENT_LIMIT`
+
+Campos novos recomendados no `.env` para a operacao completa:
+
+- `PIPELINE_FUNIL_VENDAS_ID`
+- `PIPELINE_PROSPECCAO_ID`
+- `SDR_ROUND_ROBIN_USER_IDS`
+- `CLOSER_ROUND_ROBIN_USER_IDS`
+- `CUSTOM_FIELD_CANAL_ID`
+- `CUSTOM_FIELD_CAMPANHA_ID`
+- `CUSTOM_FIELD_ADSET_ID`
+- `CUSTOM_FIELD_ANUNCIO_ID`
+- `CUSTOM_FIELD_PALAVRA_CHAVE_ID`
+- `CUSTOM_FIELD_UNIDADE_INTERESSE_ID`
+- `CUSTOM_FIELD_SDR_RESPONSAVEL_ID`
+- `CUSTOM_FIELD_CLOSER_RESPONSAVEL_ID`
+- `CUSTOM_FIELD_DATA_PRIMEIRA_RESPOSTA_ID`
+- `CUSTOM_FIELD_DATA_AGENDAMENTO_ID`
+- `CUSTOM_FIELD_MOTIVO_PERDA_ID`
 
 Configuracao atual deste projeto:
 
@@ -126,6 +161,20 @@ Depois de subir, valide:
 - `POST /simulate/message`
   simula uma mensagem para testar regras sem depender do webhook
 
+- `POST /campaigns/indicacao/launch`
+  dispara manualmente a campanha de indicacao para um ou mais leads
+  pode mover o lead para a etapa `Campanha de indicacao` do pipeline `ORGANIZACAO`
+  e dispara o `Salesbot #3` via API sem depender do editor visual do Kommo
+
+- `GET /metrics/summary`
+  retorna resumo operacional, contagem de eventos e follow-ups
+
+- `GET /metrics/events`
+  retorna os eventos recentes gravados localmente
+
+- `GET /metrics/followups`
+  retorna a fila recente de follow-ups locais
+
 Exemplo de payload para teste:
 
 ```json
@@ -145,6 +194,46 @@ Teste de fumaca automatizado:
 
 ```bash
 npm run smoke
+```
+
+Teste dedicado da etapa `Campanha de indicacao`:
+
+```bash
+TEST_BASE_URL=http://127.0.0.1:3000 ^
+TEST_INDICACAO_LEAD_ID=23003285 ^
+npm run test:indicacao
+```
+
+Disparo manual da campanha de indicacao por API:
+
+```bash
+INDICACAO_BASE_URL=https://nacapital-kommo-integration.onrender.com ^
+INDICACAO_WEBHOOK_SECRET=seu_segredo ^
+INDICACAO_LEAD_IDS=23003285,23003286 ^
+npm run launch:indicacao
+```
+
+Variaveis aceitas nesse acionamento:
+
+- `INDICACAO_BASE_URL`
+- `INDICACAO_WEBHOOK_SECRET`
+- `INDICACAO_LEAD_IDS`
+- `INDICACAO_MOVE_TO_STAGE`
+
+Fluxo recomendado para operar a campanha sem depender do bot visual:
+
+1. importar ou criar os contatos/leads que vao participar da campanha
+2. colocar esses leads no pipeline `ORGANIZACAO`
+3. usar a etapa `Campanha de indicacao` quando quiser manter o gatilho por etapa
+4. ou chamar `POST /campaigns/indicacao/launch` com os `leadIds` para disparo manual
+5. acompanhar os envios e respostas no Kommo normalmente
+
+Para ambiente publicado:
+
+```bash
+TEST_BASE_URL=https://nacapital-kommo-integration.onrender.com ^
+TEST_INDICACAO_LEAD_ID=23003285 ^
+npm run test:indicacao
 ```
 
 Para ambiente publicado:
@@ -185,6 +274,21 @@ Variaveis aceitas pelo teste de deploy:
 
 ## Fluxos implementados
 
+### Triagem inbound
+
+- inbound organico entra preferencialmente em `Funil de vendas`
+- lead de midia paga pode receber contexto de campanha, adset, anuncio e palavra-chave
+- a primeira tarefa e responder dentro do SLA comercial
+- o backend ja cria tambem uma retomada automatica de 24h como tarefa
+- o scheduler local agenda novas retomadas em 15min, 2h, 24h e 72h por padrao
+
+### Prospeccao SDR
+
+- fontes marcadas como `sdr`, `outbound`, `prospeccao` ou `ativo` entram em `PROSPECCAO`
+- quando `SDR_ROUND_ROBIN_USER_IDS` estiver preenchido, o responsavel gira entre os SDRs
+- o closer tambem pode girar automaticamente com `CLOSER_ROUND_ROBIN_USER_IDS`
+- o scheduler local agenda retomadas outbound de 24h e 72h por padrao
+
 ### Escritorio Virtual
 
 - detecta interesse e move para `Contato inicial`
@@ -217,12 +321,20 @@ Variaveis aceitas pelo teste de deploy:
 - cria triagem automatica
 - cria tarefa para visita ou fechamento
 
+## Fase 2 entregue
+
+- scheduler local para follow-up recorrente
+- armazenamento local de eventos e follow-ups em `data/automation-store.json`
+- endpoints de metricas para leitura rapida da operacao
+- consistencia do responsavel do lead com as tarefas automÃ¡ticas
+
 ## Proxima evolucao recomendada
 
 - persistir eventos em banco
 - usar fila para reprocessamento
 - integrar com assinatura de contrato
-- criar scheduler para follow-up de 24h, 72h e 7 dias
+- trocar o scheduler local por fila persistente e worker dedicado
 - enriquecer deduplicacao de contato por telefone/e-mail e por lead aberto
 - criar automacoes especificas por unidade
 - registrar webhook delivery logs para auditoria
+- salvar mudancas de etapa e dono do lead para analytics de SDR e closer
