@@ -164,7 +164,14 @@ Depois de subir, valide:
 - `POST /campaigns/indicacao/launch`
   dispara manualmente a campanha de indicacao para um ou mais leads
   pode mover o lead para a etapa `Campanha de indicacao` do pipeline `ORGANIZACAO`
-  e dispara o `Salesbot #3` via API sem depender do editor visual do Kommo
+  e dispara o bot de indicacao configurado em `SALESBOT_INDICACAO_BOT_ID` via API sem depender do editor visual do Kommo
+  importante: esse endpoint confirma apenas o aceite do comando pelo Kommo, nao a entrega real no WhatsApp
+
+- `POST /campaigns/indicacao/broadcast/prepare`
+  prepara destinatarios para a operacao correta de campanha de indicacao via `Transmissao` do Kommo
+  cria ou reaproveita contato com telefone normalizado em formato `+55`
+  cria ou atualiza lead no pipeline `ORGANIZACAO`, etapa `Campanha de indicacao`
+  vincula contato ao lead e grava nota orientando o envio por template aprovado no modulo de Broadcasting
 
 - `GET /metrics/summary`
   retorna resumo operacional, contagem de eventos e follow-ups
@@ -220,13 +227,19 @@ Variaveis aceitas nesse acionamento:
 - `INDICACAO_LEAD_IDS`
 - `INDICACAO_MOVE_TO_STAGE`
 
-Fluxo recomendado para operar a campanha sem depender do bot visual:
+Fluxo recomendado para operar a campanha de indicacao com numeros importados:
 
-1. importar ou criar os contatos/leads que vao participar da campanha
-2. colocar esses leads no pipeline `ORGANIZACAO`
-3. usar a etapa `Campanha de indicacao` quando quiser manter o gatilho por etapa
-4. ou chamar `POST /campaigns/indicacao/launch` com os `leadIds` para disparo manual
-5. acompanhar os envios e respostas no Kommo normalmente
+1. preparar os destinatarios com `POST /campaigns/indicacao/broadcast/prepare`
+2. revisar no Kommo se os contatos ficaram com telefone em formato `+55`
+3. conferir se os leads ficaram em `ORGANIZACAO > Campanha de indicacao`
+4. fazer o envio inicial pelo modulo `Transmissao` do Kommo usando template aprovado de WhatsApp
+5. acompanhar respostas no Kommo e usar o bot apenas depois que a conversa estiver efetivamente aberta
+
+Observacao importante sobre WhatsApp:
+
+- se o disparo for uma mensagem inicial fora da janela aberta de conversa, a entrega real pode depender de template aprovado no canal de WhatsApp conectado ao Kommo
+- nesse caso, o bot e o backend podem estar corretos e ainda assim a mensagem nao ser entregue ate o template/canal estar devidamente habilitado
+- para contatos importados sem conversa ativa, o caminho mais seguro nao e `bots/run`; e `Transmissao/Broadcasting` com template aprovado
 
 Para ambiente publicado:
 
@@ -326,7 +339,7 @@ Variaveis aceitas pelo teste de deploy:
 - scheduler local para follow-up recorrente
 - armazenamento local de eventos e follow-ups em `data/automation-store.json`
 - endpoints de metricas para leitura rapida da operacao
-- consistencia do responsavel do lead com as tarefas automÃ¡ticas
+- consistencia do responsavel do lead com as tarefas automaticas
 
 ## Proxima evolucao recomendada
 
