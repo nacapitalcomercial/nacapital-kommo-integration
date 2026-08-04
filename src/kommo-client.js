@@ -30,6 +30,36 @@ function buildCustomFieldValue(fieldId, value, enumMap = null) {
   };
 }
 
+function normalizePhoneDigits(value) {
+  return String(value || "").replace(/\D+/g, "");
+}
+
+function normalizePhoneE164Br(value) {
+  const digits = normalizePhoneDigits(value);
+
+  if (!digits) {
+    return "";
+  }
+
+  if (digits.startsWith("55") && digits.length >= 12) {
+    return `+${digits}`;
+  }
+
+  if (digits.length >= 10 && digits.length <= 11) {
+    return `+55${digits}`;
+  }
+
+  return digits.startsWith("+") ? digits : `+${digits}`;
+}
+
+function buildPhoneVariants(value) {
+  const digits = normalizePhoneDigits(value);
+  const e164 = normalizePhoneE164Br(value);
+  const e164Digits = normalizePhoneDigits(e164);
+
+  return [...new Set([value, digits, e164, e164Digits].filter(Boolean))];
+}
+
 export class KommoClient {
   async request(path, options = {}) {
     const response = await fetch(`${config.kommo.baseUrl}${path}`, {
@@ -68,6 +98,10 @@ export class KommoClient {
 
   async getLead(leadId) {
     return this.request(`/leads/${leadId}`);
+  }
+
+  async getContact(contactId) {
+    return this.request(`/contacts/${contactId}`);
   }
 
   async searchContacts(query) {
@@ -154,6 +188,15 @@ export class KommoClient {
     return result?._embedded?.contacts?.[0] || null;
   }
 
+  async updateContact(contactId, changes) {
+    const payload = [{ id: contactId, ...changes }];
+    const result = await this.request("/contacts", {
+      method: "PATCH",
+      body: JSON.stringify(payload)
+    });
+    return result?._embedded?.contacts?.[0] || null;
+  }
+
   async addLeadNote(leadId, text) {
     return this.request(`/leads/${leadId}/notes`, {
       method: "POST",
@@ -198,16 +241,30 @@ export class KommoClient {
   }
 
   buildContactFieldMap(values) {
+    const normalizedPhone = this.normalizePhoneForStorage(values.phone);
+
     return [
-      buildCustomFieldValue(config.contactFields.phone, values.phone),
+      buildCustomFieldValue(config.contactFields.phone, normalizedPhone),
       buildCustomFieldValue(config.contactFields.email, values.email),
       buildCustomFieldValue(config.contactFields.qualificacao, values.qualificacao),
       buildCustomFieldValue(config.contactFields.comoNosConheceu, values.comoNosConheceu)
     ].filter(Boolean);
   }
 
+  normalizePhoneForStorage(phone) {
+    return normalizePhoneE164Br(phone);
+  }
+
+  phonesMatch(left, right) {
+    const leftVariants = buildPhoneVariants(left).map((item) => normalizePhoneDigits(item));
+    const rightVariants = buildPhoneVariants(right).map((item) => normalizePhoneDigits(item));
+
+    return leftVariants.some((leftValue) => rightVariants.includes(leftValue));
+  }
+
   async findOrCreateContact({ name, phone, email, source }) {
-    const searchTerms = [phone, email, name].filter(Boolean);
+    const normalizedPhone = this.normalizePhoneForStorage(phone);
+    const searchTerms = [...new Set([phone, normalizedPhone, email, name].filter(Boolean))];
 
     for (const term of searchTerms) {
       const contacts = await this.searchContacts(term);
@@ -218,13 +275,33 @@ export class KommoClient {
           .map((item) => String(item.value || ""));
 
         return (
-          (phone && allValues.some((value) => value.replace(/[^\d+]/g, "") === phone)) ||
+          (normalizedPhone &&
+            allValues.some((value) => this.phonesMatch(String(value || ""), normalizedPhone))) ||
           (email && allValues.some((value) => value.toLowerCase() === String(email).toLowerCase())) ||
           (name && contact.name === name)
         );
       });
 
       if (match) {
+        if (normalizedPhone) {
+          const currentPhoneValues = (match.custom_fields_values || [])
+            .filter((field) => field.field_code === "PHONE" || field.field_id === config.contactFields.phone)
+            .flatMap((field) => field.values || [])
+            .map((item) => String(item.value || ""));
+          const hasNormalizedPhone = currentPhoneValues.some((value) => this.phonesMatch(value, normalizedPhone));
+
+          if (!hasNormalizedPhone) {
+            await this.updateContact(match.id, {
+              custom_fields_values: this.buildContactFieldMap({
+                phone: normalizedPhone,
+                email,
+                qualificacao: "Novo lead",
+                comoNosConheceu: source
+              })
+            });
+          }
+        }
+
         return match;
       }
     }
@@ -232,7 +309,7 @@ export class KommoClient {
     return this.createContact({
       name,
       customFields: this.buildContactFieldMap({
-        phone,
+        phone: normalizedPhone,
         email,
         qualificacao: "Novo lead",
         comoNosConheceu: source
