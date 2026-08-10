@@ -227,6 +227,60 @@
       min-width: 150px;
     }
 
+    .period-filter-panel {
+      min-width: 290px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .period-filter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .period-filter-button {
+      padding: 8px 12px;
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: none;
+    }
+
+    .period-filter-list {
+      display: grid;
+      gap: 8px;
+      max-height: 190px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .period-filter-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .period-filter-option input {
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .period-filter-summary {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     .stacked-chart,
     .totals-chart {
       display: flex;
@@ -631,8 +685,15 @@
               </label>
 
               <label>
-                <span>Período</span>
-                <select id="funnel-period"></select>
+                <span>Períodos</span>
+                <div class="period-filter-panel">
+                  <div class="period-filter-actions">
+                    <button class="button button-ghost period-filter-button" id="funnel-select-all" type="button">Todos</button>
+                    <button class="button button-ghost period-filter-button" id="funnel-select-latest" type="button">Último</button>
+                  </div>
+                  <div class="period-filter-list" id="funnel-period-list"></div>
+                  <div class="period-filter-summary" id="funnel-period-summary"></div>
+                </div>
               </label>
             </div>
           </div>
@@ -795,7 +856,7 @@
     let sheetEditUrl = "";
     let lastSheetSync = "";
     let funnelMode = "week";
-    let funnelPeriod = "2026-08-10";
+    let funnelSelectedPeriods = ["2026-08-10"];
 
     const sourceNode = document.getElementById("source-label");
     const totalNode = document.getElementById("total-leads");
@@ -807,7 +868,10 @@
     const funnelChart = document.getElementById("funnel-chart");
     const funnelLegend = document.getElementById("funnel-legend");
     const funnelModeSelect = document.getElementById("funnel-mode");
-    const funnelPeriodSelect = document.getElementById("funnel-period");
+    const funnelPeriodList = document.getElementById("funnel-period-list");
+    const funnelPeriodSummary = document.getElementById("funnel-period-summary");
+    const funnelSelectAllButton = document.getElementById("funnel-select-all");
+    const funnelSelectLatestButton = document.getElementById("funnel-select-latest");
     const funnelNoteNode = document.getElementById("funnel-note");
     const groupModeSelect = document.getElementById("group-mode");
     const importModeSelect = document.getElementById("import-mode");
@@ -1241,28 +1305,54 @@
       }));
     }
 
+    function getDefaultFunnelSelection(datasets) {
+      return datasets.length ? [datasets[datasets.length - 1].periodKey] : [];
+    }
+
+    function getFunnelSelectionSummary(selectedDatasets, allDatasets) {
+      if (!selectedDatasets.length) return "Nenhum período selecionado.";
+      if (selectedDatasets.length === allDatasets.length) return "Todos os períodos deste recorte estão visíveis.";
+      if (selectedDatasets.length === 1) return `${selectedDatasets[0].label} selecionado.`;
+      return `${selectedDatasets.length} períodos selecionados.`;
+    }
+
     function syncFunnelPeriodOptions() {
       const datasets = getFunnelDatasets(funnelMode);
       if (!datasets.length) {
-        funnelPeriodSelect.innerHTML = "";
-        return null;
+        funnelPeriodList.innerHTML = "";
+        funnelPeriodSummary.textContent = "Sem períodos disponíveis para este recorte.";
+        return [];
       }
 
-      const hasCurrent = datasets.some((item) => item.periodKey === funnelPeriod);
-      if (!hasCurrent) {
-        funnelPeriod = datasets[datasets.length - 1].periodKey;
+      const availableKeys = new Set(datasets.map((item) => item.periodKey));
+      funnelSelectedPeriods = funnelSelectedPeriods.filter((item) => availableKeys.has(item));
+      if (!funnelSelectedPeriods.length) {
+        funnelSelectedPeriods = getDefaultFunnelSelection(datasets);
       }
 
-      funnelPeriodSelect.innerHTML = "";
+      const selectedKeySet = new Set(funnelSelectedPeriods);
+      const selectedDatasets = datasets.filter((item) => selectedKeySet.has(item.periodKey));
+
+      funnelPeriodList.innerHTML = "";
       datasets.forEach((item) => {
-        const option = document.createElement("option");
-        option.value = item.periodKey;
-        option.textContent = item.label;
-        option.selected = item.periodKey === funnelPeriod;
-        funnelPeriodSelect.appendChild(option);
+        const optionLabel = document.createElement("label");
+        optionLabel.className = "period-filter-option";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = item.periodKey;
+        checkbox.checked = selectedKeySet.has(item.periodKey);
+
+        const text = document.createElement("span");
+        text.textContent = item.label;
+
+        optionLabel.appendChild(checkbox);
+        optionLabel.appendChild(text);
+        funnelPeriodList.appendChild(optionLabel);
       });
 
-      return datasets.find((item) => item.periodKey === funnelPeriod) || datasets[datasets.length - 1];
+      funnelPeriodSummary.textContent = getFunnelSelectionSummary(selectedDatasets, datasets);
+      return selectedDatasets;
     }
 
     function persistState() {
@@ -1272,7 +1362,9 @@
         skippedRows,
         sheetCsvUrl,
         sheetEditUrl,
-        lastSheetSync
+        lastSheetSync,
+        funnelMode,
+        funnelSelectedPeriods
       }));
     }
 
@@ -1289,6 +1381,8 @@
           sheetCsvUrl = parsed.sheetCsvUrl || "";
           sheetEditUrl = parsed.sheetEditUrl || "";
           lastSheetSync = parsed.lastSheetSync || "";
+          funnelMode = parsed.funnelMode || funnelMode;
+          funnelSelectedPeriods = Array.isArray(parsed.funnelSelectedPeriods) ? parsed.funnelSelectedPeriods : funnelSelectedPeriods;
         }
       } catch (error) {
         localStorage.removeItem(STORAGE_KEY);
@@ -1375,11 +1469,18 @@
       const groupMode = groupModeSelect.value;
       const aggregated = aggregateRows(groupMode);
       const totals = getTotalsByCategory();
-      const activeFunnel = syncFunnelPeriodOptions();
-      const funnelStages = FUNNEL_STAGE_META.map((item) => ({
-        ...item,
-        ...(activeFunnel?.stages?.[item.key] || { total: 0, byCategory: {} })
-      }));
+      const activeFunnels = syncFunnelPeriodOptions();
+      const funnelStages = FUNNEL_STAGE_META.map((item) => {
+        const stage = { ...item, total: 0, byCategory: {} };
+        activeFunnels.forEach((dataset) => {
+          const datasetStage = dataset.stages?.[item.key] || { total: 0, byCategory: {} };
+          stage.total += datasetStage.total || 0;
+          Object.entries(datasetStage.byCategory || {}).forEach(([category, quantity]) => {
+            stage.byCategory[category] = (stage.byCategory[category] || 0) + quantity;
+          });
+        });
+        return stage;
+      });
       const maxFunnel = Math.max(...funnelStages.map((item) => item.total), 1);
       const maxPeriod = Math.max(...aggregated.map((item) => item.total), 1);
       const maxCategory = Math.max(...totals.map((item) => item.total), 1);
@@ -1584,7 +1685,6 @@
     loadState();
     funnelModeSelect.value = funnelMode;
     syncFunnelPeriodOptions();
-    funnelPeriodSelect.value = funnelPeriod;
     if (sheetEditUrl || sheetCsvUrl) {
       sheetUrlInput.value = sheetEditUrl || sheetCsvUrl;
     }
