@@ -1601,13 +1601,17 @@
         funnelLegend.appendChild(itemNode);
       });
 
-      if (activeFunnel) {
+      if (activeFunnels.length) {
         const stageSummary = funnelStages
           .map((item) => `${item.label}: ${item.total}`)
           .join(" | ");
-        funnelNoteNode.textContent = `${activeFunnel.source}: ${activeFunnel.label}. ${stageSummary}.`;
+        const sourceSummary = Array.from(new Set(activeFunnels.map((item) => item.source))).join(" + ");
+        const periodSummary = activeFunnels.length <= 2
+          ? activeFunnels.map((item) => item.label).join(" + ")
+          : `${activeFunnels.length} períodos selecionados`;
+        funnelNoteNode.textContent = `${sourceSummary}: ${periodSummary}. ${stageSummary}.`;
       } else {
-        funnelNoteNode.textContent = "Nenhum dado de conversão comercial disponível para o período selecionado.";
+        funnelNoteNode.textContent = "Selecione pelo menos um período para visualizar a conversão comercial.";
       }
     }
 
@@ -1626,12 +1630,41 @@
     groupModeSelect.addEventListener("change", render);
     funnelModeSelect.addEventListener("change", () => {
       funnelMode = funnelModeSelect.value;
-      const dataset = syncFunnelPeriodOptions();
-      if (dataset) funnelPeriod = dataset.periodKey;
+      const datasets = getFunnelDatasets(funnelMode);
+      const availableKeys = new Set(datasets.map((item) => item.periodKey));
+      funnelSelectedPeriods = funnelSelectedPeriods.filter((item) => availableKeys.has(item));
+      if (!funnelSelectedPeriods.length) {
+        funnelSelectedPeriods = getDefaultFunnelSelection(datasets);
+      }
+      persistState();
       render();
     });
-    funnelPeriodSelect.addEventListener("change", () => {
-      funnelPeriod = funnelPeriodSelect.value;
+
+    funnelPeriodList.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") return;
+
+      if (target.checked) {
+        if (!funnelSelectedPeriods.includes(target.value)) {
+          funnelSelectedPeriods = funnelSelectedPeriods.concat(target.value);
+        }
+      } else {
+        funnelSelectedPeriods = funnelSelectedPeriods.filter((item) => item !== target.value);
+      }
+
+      persistState();
+      render();
+    });
+
+    funnelSelectAllButton.addEventListener("click", () => {
+      funnelSelectedPeriods = getFunnelDatasets(funnelMode).map((item) => item.periodKey);
+      persistState();
+      render();
+    });
+
+    funnelSelectLatestButton.addEventListener("click", () => {
+      funnelSelectedPeriods = getDefaultFunnelSelection(getFunnelDatasets(funnelMode));
+      persistState();
       render();
     });
 
