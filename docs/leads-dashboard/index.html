@@ -728,6 +728,14 @@
       "Ligacao": "var(--ligacao)",
     };
 
+    const CATEGORY_DETAILS = {
+      "Instagram": "Leads originados pelo Instagram.",
+      "Google": "Leads originados pelas buscas no Google.",
+      "Indicacao/Parceiro": "Leads vindos de indicação ou parceria.",
+      "Base/Retorno": "Leads de retorno, reativação ou base já existente.",
+      "Nao informado": "Leads sem origem identificada na base.",
+      "Ligacao": "Leads originados por ligação.",
+    };
     const INITIAL_DATA = [
       { date: "2026-04-14", category: "Base/Retorno", quantity: 1 },
       { date: "2026-07-10", category: "Google", quantity: 1 },
@@ -787,7 +795,7 @@
     let sheetEditUrl = "";
     let lastSheetSync = "";
     let funnelMode = "week";
-    let funnelPeriod = "2026-07-27";
+    let funnelPeriod = "2026-08-10";
 
     const sourceNode = document.getElementById("source-label");
     const totalNode = document.getElementById("total-leads");
@@ -854,9 +862,51 @@
             }
           }
         }
+      },
+      {
+        weekStart: "2026-08-03",
+        label: "Semana de 03/08/2026",
+        source: "Base lida do PDF Book 6 (3)",
+        stages: {
+          visitas: {
+            total: 3,
+            byCategory: {
+              "Google": 2,
+              "Ligacao": 1
+            }
+          },
+          propostas: {
+            total: 0,
+            byCategory: {}
+          },
+          contratos: {
+            total: 0,
+            byCategory: {}
+          }
+        }
+      },
+      {
+        weekStart: "2026-08-10",
+        label: "Semana de 10/08/2026",
+        source: "Base lida do PDF Book 6 (3)",
+        stages: {
+          visitas: {
+            total: 1,
+            byCategory: {
+              "Google": 1
+            }
+          },
+          propostas: {
+            total: 0,
+            byCategory: {}
+          },
+          contratos: {
+            total: 0,
+            byCategory: {}
+          }
+        }
       }
     ];
-
     function deriveGoogleSheetCsvUrl(value) {
       const trimmed = String(value || "").trim();
       if (!trimmed) return { csvUrl: "", editUrl: "" };
@@ -1369,27 +1419,29 @@
       totalsChart.innerHTML = "";
       totals.forEach((item) => {
         const rowNode = document.createElement("div");
-        rowNode.className = "totals-row";
+        rowNode.className = "funnel-row";
 
         const labelNode = document.createElement("div");
-        labelNode.className = "totals-label";
-        labelNode.innerHTML = `<span class="dot" style="background:${CATEGORY_COLORS[item.category] || "#1d3557"}"></span><span>${CATEGORY_LABELS[item.category] || item.category}</span>`;
+        labelNode.className = "funnel-label";
+        labelNode.innerHTML = `<strong>${CATEGORY_LABELS[item.category] || item.category}</strong><span>${CATEGORY_DETAILS[item.category] || "Leads classificados nesta origem."}</span>`;
 
-        const barArea = document.createElement("div");
-        barArea.className = "totals-bar-area";
+        const trackNode = document.createElement("div");
+        trackNode.className = "funnel-track";
 
-        const barNode = document.createElement("div");
-        barNode.className = "totals-bar";
-        barNode.style.width = `${(item.total / maxCategory) * 100}%`;
-        barNode.style.background = CATEGORY_COLORS[item.category] || "#1d3557";
+        const fillNode = document.createElement("div");
+        fillNode.className = "funnel-fill";
+        fillNode.style.width = `${(item.total / maxCategory) * 100}%`;
+        fillNode.style.background = CATEGORY_COLORS[item.category] || "#1d3557";
+        fillNode.title = `${CATEGORY_LABELS[item.category] || item.category}: ${item.total}`;
+        trackNode.appendChild(fillNode);
 
-        const valueNode = document.createElement("strong");
+        const valueNode = document.createElement("div");
+        valueNode.className = "funnel-value";
         valueNode.textContent = String(item.total);
 
-        barArea.appendChild(barNode);
-        barArea.appendChild(valueNode);
         rowNode.appendChild(labelNode);
-        rowNode.appendChild(barArea);
+        rowNode.appendChild(trackNode);
+        rowNode.appendChild(valueNode);
         totalsChart.appendChild(rowNode);
       });
 
@@ -1409,18 +1461,24 @@
         fillNode.className = "funnel-fill";
         fillNode.style.width = `${(item.total / maxFunnel) * 100}%`;
 
-        let cursor = 0;
-        const gradientStops = Object.keys(item.byCategory).map((category) => {
-          const start = cursor;
-          cursor += (item.byCategory[category] / item.total) * 100;
-          const color = CATEGORY_COLORS[category] || "#1d3557";
-          return `${color} ${start}% ${cursor}%`;
-        });
+        const categories = Object.keys(item.byCategory || {});
+        if (item.total > 0 && categories.length) {
+          let cursor = 0;
+          const gradientStops = categories.map((category) => {
+            const start = cursor;
+            cursor += (item.byCategory[category] / item.total) * 100;
+            const color = CATEGORY_COLORS[category] || "#1d3557";
+            return `${color} ${start}% ${cursor}%`;
+          });
 
-        fillNode.style.background = `linear-gradient(90deg, ${gradientStops.join(", ")})`;
-        fillNode.title = Object.keys(item.byCategory)
-          .map((category) => `${CATEGORY_LABELS[category] || category}: ${item.byCategory[category]}`)
-          .join(" | ");
+          fillNode.style.background = `linear-gradient(90deg, ${gradientStops.join(", ")})`;
+          fillNode.title = categories
+            .map((category) => `${CATEGORY_LABELS[category] || category}: ${item.byCategory[category]}`)
+            .join(" | ");
+        } else {
+          fillNode.style.background = "rgba(21, 36, 64, 0.16)";
+          fillNode.title = "Sem avanço registrado neste estágio para o período selecionado.";
+        }
         trackNode.appendChild(fillNode);
 
         const valueNode = document.createElement("div");
