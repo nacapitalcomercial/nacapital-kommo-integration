@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -619,6 +619,23 @@
             <span class="section-label">Conversão comercial</span>
             <h2>Funil de visita a contrato</h2>
           </div>
+
+          <div class="controls">
+            <div class="controls-row">
+              <label>
+                <span>Recorte</span>
+                <select id="funnel-mode">
+                  <option value="week">Semanal</option>
+                  <option value="month">Mensal</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Período</span>
+                <select id="funnel-period"></select>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="funnel-chart" id="funnel-chart"></div>
@@ -751,47 +768,14 @@
       { date: "2026-07-31", category: "Nao informado", quantity: 3 }
     ];
 
-    const FUNNEL_STAGES = [
-      {
-        key: "visitas",
-        label: "Fizeram visita",
-        detail: "Leads que avançaram para conhecer o espaço",
-        total: 7,
-        byCategory: {
-          "Google": 3,
-          "Base/Retorno": 3,
-          "Indicacao/Parceiro": 1
-        }
-      },
-      {
-        key: "propostas",
-        label: "Propostas enviadas",
-        detail: "Leads com proposta comercial registrada",
-        total: 5,
-        byCategory: {
-          "Google": 1,
-          "Base/Retorno": 3,
-          "Indicacao/Parceiro": 1
-        }
-      },
-      {
-        key: "contratos",
-        label: "Contratos fechados",
-        detail: "Leads convertidos em contrato",
-        total: 4,
-        byCategory: {
-          "Base/Retorno": 3,
-          "Indicacao/Parceiro": 1
-        }
-      }
-    ];
-
     let rows = INITIAL_DATA.slice();
     let sourceLabel = "Base inicial importada do PDF";
     let skippedRows = 0;
     let sheetCsvUrl = "";
     let sheetEditUrl = "";
     let lastSheetSync = "";
+    let funnelMode = "week";
+    let funnelPeriod = "2026-07-27";
 
     const sourceNode = document.getElementById("source-label");
     const totalNode = document.getElementById("total-leads");
@@ -802,10 +786,64 @@
     const totalsChart = document.getElementById("totals-chart");
     const funnelChart = document.getElementById("funnel-chart");
     const funnelLegend = document.getElementById("funnel-legend");
+    const funnelModeSelect = document.getElementById("funnel-mode");
+    const funnelPeriodSelect = document.getElementById("funnel-period");
+    const funnelNoteNode = document.getElementById("funnel-note");
     const groupModeSelect = document.getElementById("group-mode");
     const importModeSelect = document.getElementById("import-mode");
     const input = document.getElementById("csv-input");
     const sheetUrlInput = document.getElementById("sheet-url-input");
+
+    const FUNNEL_STAGE_META = [
+      {
+        key: "visitas",
+        label: "Fizeram visita",
+        detail: "Leads que avançaram para conhecer o espaço",
+      },
+      {
+        key: "propostas",
+        label: "Propostas enviadas",
+        detail: "Leads com proposta comercial registrada",
+      },
+      {
+        key: "contratos",
+        label: "Contratos fechados",
+        detail: "Leads convertidos em contrato",
+      }
+    ];
+
+    const FUNNEL_PERIOD_DATA = [
+      {
+        weekStart: "2026-07-27",
+        label: "Semana de 27/07/2026",
+        source: "Base lida do PDF Book 6 (2)",
+        stages: {
+          visitas: {
+            total: 7,
+            byCategory: {
+              "Google": 3,
+              "Base/Retorno": 3,
+              "Indicacao/Parceiro": 1
+            }
+          },
+          propostas: {
+            total: 5,
+            byCategory: {
+              "Google": 1,
+              "Base/Retorno": 3,
+              "Indicacao/Parceiro": 1
+            }
+          },
+          contratos: {
+            total: 4,
+            byCategory: {
+              "Base/Retorno": 3,
+              "Indicacao/Parceiro": 1
+            }
+          }
+        }
+      }
+    ];
 
     function deriveGoogleSheetCsvUrl(value) {
       const trimmed = String(value || "").trim();
@@ -1085,6 +1123,86 @@
       return ordered;
     }
 
+    function getMonthKeyFromWeek(value) {
+      return value.slice(0, 7);
+    }
+
+    function getMonthLabel(value) {
+      return `${value.slice(5, 7)}/${value.slice(0, 4)}`;
+    }
+
+    function buildMonthlyFunnelData() {
+      const grouped = new Map();
+
+      FUNNEL_PERIOD_DATA.forEach((item) => {
+        const monthKey = getMonthKeyFromWeek(item.weekStart);
+        const current = grouped.get(monthKey) || {
+          periodKey: monthKey,
+          label: `Mês ${getMonthLabel(monthKey)}`,
+          source: [],
+          stages: {}
+        };
+
+        current.source.push(item.source);
+
+        FUNNEL_STAGE_META.forEach((stageMeta) => {
+          const baseStage = current.stages[stageMeta.key] || { total: 0, byCategory: {} };
+          const nextStage = item.stages[stageMeta.key] || { total: 0, byCategory: {} };
+          baseStage.total += nextStage.total || 0;
+
+          Object.entries(nextStage.byCategory || {}).forEach(([category, quantity]) => {
+            baseStage.byCategory[category] = (baseStage.byCategory[category] || 0) + quantity;
+          });
+
+          current.stages[stageMeta.key] = baseStage;
+        });
+
+        grouped.set(monthKey, current);
+      });
+
+      return Array.from(grouped.values())
+        .sort((a, b) => a.periodKey.localeCompare(b.periodKey))
+        .map((item) => ({
+          ...item,
+          source: Array.from(new Set(item.source)).join(" + ")
+        }));
+    }
+
+    function getFunnelDatasets(mode) {
+      if (mode === "month") return buildMonthlyFunnelData();
+
+      return FUNNEL_PERIOD_DATA.map((item) => ({
+        periodKey: item.weekStart,
+        label: item.label,
+        source: item.source,
+        stages: item.stages
+      }));
+    }
+
+    function syncFunnelPeriodOptions() {
+      const datasets = getFunnelDatasets(funnelMode);
+      if (!datasets.length) {
+        funnelPeriodSelect.innerHTML = "";
+        return null;
+      }
+
+      const hasCurrent = datasets.some((item) => item.periodKey === funnelPeriod);
+      if (!hasCurrent) {
+        funnelPeriod = datasets[datasets.length - 1].periodKey;
+      }
+
+      funnelPeriodSelect.innerHTML = "";
+      datasets.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.periodKey;
+        option.textContent = item.label;
+        option.selected = item.periodKey === funnelPeriod;
+        funnelPeriodSelect.appendChild(option);
+      });
+
+      return datasets.find((item) => item.periodKey === funnelPeriod) || datasets[datasets.length - 1];
+    }
+
     function persistState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         rows,
@@ -1195,7 +1313,12 @@
       const groupMode = groupModeSelect.value;
       const aggregated = aggregateRows(groupMode);
       const totals = getTotalsByCategory();
-      const maxFunnel = Math.max(...FUNNEL_STAGES.map((item) => item.total), 1);
+      const activeFunnel = syncFunnelPeriodOptions();
+      const funnelStages = FUNNEL_STAGE_META.map((item) => ({
+        ...item,
+        ...(activeFunnel?.stages?.[item.key] || { total: 0, byCategory: {} })
+      }));
+      const maxFunnel = Math.max(...funnelStages.map((item) => item.total), 1);
       const maxPeriod = Math.max(...aggregated.map((item) => item.total), 1);
       const maxCategory = Math.max(...totals.map((item) => item.total), 1);
       const totalLeads = rows.reduce((sum, row) => sum + row.quantity, 0);
@@ -1259,7 +1382,7 @@
       });
 
       funnelChart.innerHTML = "";
-      FUNNEL_STAGES.forEach((item) => {
+      funnelStages.forEach((item) => {
         const rowNode = document.createElement("div");
         rowNode.className = "funnel-row";
 
@@ -1299,12 +1422,22 @@
       });
 
       funnelLegend.innerHTML = "";
-      ["Google", "Base/Retorno", "Indicacao/Parceiro"].forEach((category) => {
+      const legendCategories = Array.from(new Set(funnelStages.flatMap((item) => Object.keys(item.byCategory || {}))));
+      legendCategories.forEach((category) => {
         const itemNode = document.createElement("div");
         itemNode.className = "funnel-legend-item";
         itemNode.innerHTML = `<span class="dot" style="background:${CATEGORY_COLORS[category] || "#1d3557"}"></span><span>${CATEGORY_LABELS[category] || category}</span>`;
         funnelLegend.appendChild(itemNode);
       });
+
+      if (activeFunnel) {
+        const stageSummary = funnelStages
+          .map((item) => `${item.label}: ${item.total}`)
+          .join(" | ");
+        funnelNoteNode.textContent = `${activeFunnel.source}: ${activeFunnel.label}. ${stageSummary}.`;
+      } else {
+        funnelNoteNode.textContent = "Nenhum dado de conversão comercial disponível para o período selecionado.";
+      }
     }
 
     document.getElementById("upload-trigger").addEventListener("click", () => input.click());
@@ -1320,6 +1453,16 @@
     });
 
     groupModeSelect.addEventListener("change", render);
+    funnelModeSelect.addEventListener("change", () => {
+      funnelMode = funnelModeSelect.value;
+      const dataset = syncFunnelPeriodOptions();
+      if (dataset) funnelPeriod = dataset.periodKey;
+      render();
+    });
+    funnelPeriodSelect.addEventListener("change", () => {
+      funnelPeriod = funnelPeriodSelect.value;
+      render();
+    });
 
     input.addEventListener("change", async (event) => {
       const file = event.target.files && event.target.files[0];
@@ -1369,6 +1512,9 @@
     });
 
     loadState();
+    funnelModeSelect.value = funnelMode;
+    syncFunnelPeriodOptions();
+    funnelPeriodSelect.value = funnelPeriod;
     if (sheetEditUrl || sheetCsvUrl) {
       sheetUrlInput.value = sheetEditUrl || sheetCsvUrl;
     }
@@ -1379,3 +1525,4 @@
   </script>
 </body>
 </html>
+
