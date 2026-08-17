@@ -1,8 +1,23 @@
 (function () {
   const ROOT_CLASS = "filter-ui-v2";
+  const STYLESHEET_HREF = "./filter-enhancements.css";
 
   function byId(id) {
     return document.getElementById(id);
+  }
+
+  function ensureStylesheet() {
+    const existing = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+      .find((node) => (node.getAttribute("href") || "").includes("filter-enhancements.css"));
+
+    if (existing) {
+      return;
+    }
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = STYLESHEET_HREF;
+    document.head.appendChild(link);
   }
 
   function addRootClass() {
@@ -163,6 +178,7 @@
   }
 
   function boot() {
+    ensureStylesheet();
     addRootClass();
     enhancePanel(
       "totals-period-panel",
