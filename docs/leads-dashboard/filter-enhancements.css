@@ -1,0 +1,256 @@
+:root {
+  --filter-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(253, 247, 239, 0.94));
+  --filter-surface-strong: linear-gradient(180deg, rgba(255, 248, 241, 0.98), rgba(255, 255, 255, 0.94));
+  --filter-border-strong: rgba(239, 125, 55, 0.22);
+  --filter-shadow-soft: 0 18px 36px rgba(21, 36, 64, 0.10);
+}
+
+.filter-ui-v2 .controls {
+  gap: 10px;
+}
+
+.filter-ui-v2 .controls-row {
+  gap: 12px;
+  align-items: end;
+}
+
+.filter-ui-v2 .controls label > span {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.filter-ui-v2 .period-filter-shell {
+  min-width: 320px;
+  max-width: 380px;
+}
+
+.filter-ui-v2 .period-filter-trigger {
+  position: relative;
+  gap: 14px;
+  min-height: 74px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border-color: rgba(21, 36, 64, 0.08);
+  background: var(--filter-surface);
+  box-shadow: var(--filter-shadow-soft);
+}
+
+.filter-ui-v2 .period-filter-trigger::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(21, 36, 64, 0.34);
+  border-bottom: 2px solid rgba(21, 36, 64, 0.34);
+  transform: rotate(45deg);
+  justify-self: end;
+  margin-left: auto;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.filter-ui-v2 .period-filter-trigger[aria-expanded="true"] {
+  border-color: var(--filter-border-strong);
+  background: var(--filter-surface-strong);
+  box-shadow: 0 22px 40px rgba(239, 125, 55, 0.14);
+}
+
+.filter-ui-v2 .period-filter-trigger[aria-expanded="true"]::after {
+  transform: rotate(-135deg) translate(-2px, -2px);
+  border-color: var(--accent-dark);
+}
+
+.filter-ui-v2 .period-filter-trigger-copy {
+  gap: 4px;
+}
+
+.filter-ui-v2 .period-filter-trigger-label {
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.filter-ui-v2 .period-filter-trigger-meta {
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}
+
+.filter-ui-v2 .period-filter-badge {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  min-width: 28px;
+  padding: 6px 9px;
+  background: rgba(239, 125, 55, 0.14);
+  color: var(--accent-dark);
+}
+
+.filter-ui-v2 .period-filter-panel {
+  width: min(390px, 92vw);
+  padding: 16px;
+  border-radius: 22px;
+  border-color: rgba(21, 36, 64, 0.08);
+  background: rgba(255, 251, 245, 0.99);
+  box-shadow: 0 30px 60px rgba(21, 36, 64, 0.18);
+}
+
+.filter-ui-v2 .period-filter-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.filter-ui-v2 .period-filter-panel-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-ui-v2 .period-filter-panel-title strong {
+  font-size: 0.96rem;
+  color: var(--text);
+}
+
+.filter-ui-v2 .period-filter-panel-title span {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.filter-ui-v2 .period-filter-close {
+  padding: 9px 12px;
+  border: 1px solid rgba(21, 36, 64, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.filter-ui-v2 .period-filter-actions {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.filter-ui-v2 .period-filter-button {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border-color: rgba(21, 36, 64, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text);
+}
+
+.filter-ui-v2 .period-filter-button:hover,
+.filter-ui-v2 .period-filter-close:hover {
+  border-color: var(--filter-border-strong);
+  color: var(--accent-dark);
+}
+
+.filter-ui-v2 .period-filter-list {
+  gap: 10px;
+  max-height: 248px;
+  padding-right: 2px;
+}
+
+.filter-ui-v2 .period-filter-option {
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+.filter-ui-v2 .period-filter-option::after {
+  content: "Selecionar";
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(21, 36, 64, 0.34);
+}
+
+.filter-ui-v2 .period-filter-option.is-selected::after {
+  content: "Ativo";
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.filter-ui-v2 .period-filter-summary {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(21, 36, 64, 0.08);
+  font-size: 0.83rem;
+}
+
+.filter-ui-v2 .period-filter-selected {
+  justify-content: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  max-width: 380px;
+}
+
+.filter-ui-v2 .period-filter-chip {
+  padding: 7px 11px;
+  font-size: 0.78rem;
+  background: rgba(21, 36, 64, 0.05);
+}
+
+.filter-ui-v2 .period-filter-chip-action {
+  border: none;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.filter-ui-v2 .period-filter-chip-action:hover {
+  transform: translateY(-1px);
+  background: rgba(239, 125, 55, 0.12);
+}
+
+.filter-ui-v2 .period-filter-chip-action::after {
+  content: "×";
+  font-size: 0.9rem;
+  line-height: 1;
+  color: rgba(21, 36, 64, 0.46);
+}
+
+.filter-ui-v2 .period-filter-chip-action:hover::after {
+  color: var(--accent-dark);
+}
+
+.filter-ui-v2 .period-filter-chip.is-summary {
+  background: rgba(239, 125, 55, 0.12);
+  color: var(--accent-dark);
+}
+
+.filter-ui-v2 .period-filter-chip.is-summary::before {
+  background: var(--accent);
+}
+
+@media (max-width: 980px) {
+  .filter-ui-v2 .period-filter-shell {
+    min-width: 100%;
+    max-width: none;
+  }
+
+  .filter-ui-v2 .period-filter-selected {
+    max-width: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .filter-ui-v2 .period-filter-trigger {
+    min-height: 68px;
+  }
+
+  .filter-ui-v2 .period-filter-option {
+    grid-template-columns: auto 1fr;
+  }
+
+  .filter-ui-v2 .period-filter-option::after {
+    display: none;
+  }
+
+  .filter-ui-v2 .period-filter-panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
