@@ -783,7 +783,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE_KEY = "nacapital-leads-dashboard-static-v3";
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v4";
     const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
     const DEFAULT_SHEET_NAME = "Leads_Semanais";
     const CATEGORY_ORDER = [
@@ -987,12 +987,12 @@
       {
         weekStart: "2026-08-10",
         label: "Semana de 10/08/2026",
-        source: "Base lida do PDF Book 6 (3)",
+        source: "Base lida do PDF Book 6 (5)",
         stages: {
           visitas: {
             total: 1,
             byCategory: {
-              "Google": 1
+              "Base/Retorno": 1
             }
           },
           propostas: {
@@ -1006,273 +1006,218 @@
         }
       }
     ];
-    function deriveGoogleSheetCsvUrl(value) {
-      const trimmed = String(value || "").trim();
-      if (!trimmed) return { csvUrl: "", editUrl: "" };
 
-      if (trimmed.includes("tqx=out:csv") || trimmed.includes("/export?format=csv")) {
-        return { csvUrl: trimmed, editUrl: trimmed };
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function normalizeCategory(rawValue) {
+      if (!rawValue) return "Nao informado";
+      const value = String(rawValue).normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+
+      if (value.includes("insta")) return "Instagram";
+      if (value.includes("goog")) return "Google";
+      if (value.includes("indic") || value.includes("parce")) return "Indicacao/Parceiro";
+      if (value.includes("base") || value.includes("retorno") || value.includes("reativ")) return "Base/Retorno";
+      if (value.includes("liga") || value.includes("telefone") || value.includes("call")) return "Ligacao";
+      if (value.includes("nao") || value.includes("sem") || value.includes("não")) return "Nao informado";
+      return "Nao informado";
+    }
+
+    function parseDateCell(value) {
+      if (value == null || value === "") return null;
+
+      if (value instanceof Date && !Number.isNaN(value.getTime())) {
+        return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`;
       }
 
-      const match = trimmed.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-      if (!match) return { csvUrl: "", editUrl: trimmed };
-
-      const spreadsheetId = match[1];
-      const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(DEFAULT_SHEET_NAME)}`;
-      const editUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`;
-      return { csvUrl, editUrl };
-    }
-
-    function normalizeHeader(value) {
-      return value
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9]+/g, "");
-    }
-
-    function normalizeCategory(value) {
-      const normalized = value
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
-
-      if (!normalized) return "Nao informado";
-      if (normalized.includes("insta")) return "Instagram";
-      if (normalized.includes("google")) return "Google";
-      if (normalized.includes("indic") || normalized.includes("parceir") || normalized.includes("refer")) return "Indicacao/Parceiro";
-      if (normalized.includes("base") || normalized.includes("retorno") || normalized.includes("reativ")) return "Base/Retorno";
-      if (normalized.includes("liga") || normalized.includes("telefone")) return "Ligacao";
-      if (normalized.includes("nao informado") || normalized.includes("na informado") || normalized.includes("sem origem")) return "Nao informado";
-      return value.trim() || "Nao informado";
-    }
-
-    function parseDateValue(value) {
-      const trimmed = String(value || "").trim();
-      if (!trimmed) return null;
-
-      const iso = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (iso) return trimmed;
-
-      const excelSerial = Number(trimmed);
-      if (Number.isFinite(excelSerial) && excelSerial > 20000 && excelSerial < 60000) {
-        const date = new Date(Math.round((excelSerial - 25569) * 86400 * 1000));
-        if (!Number.isNaN(date.getTime())) {
-          return date.toISOString().slice(0, 10);
+      if (typeof value === "number" && Number.isFinite(value)) {
+        const parsed = XLSX.SSF.parse_date_code(value);
+        if (parsed) {
+          return `${parsed.y}-${pad(parsed.m)}-${pad(parsed.d)}`;
         }
       }
 
-      const br = trimmed.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
-      if (!br) return null;
+      const text = String(value).trim();
+      if (!text) return null;
 
-      const day = Number(br[1]);
-      const month = Number(br[2]);
-      const rawYear = Number(br[3]);
-      const year = rawYear < 100 ? 2000 + rawYear : rawYear;
+      const brMatch = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+      if (brMatch) {
+        const day = Number(brMatch[1]);
+        const month = Number(brMatch[2]);
+        const year = Number(brMatch[3].length === 2 ? `20${brMatch[3]}` : brMatch[3]);
+        return `${year}-${pad(month)}-${pad(day)}`;
+      }
 
-      if (day < 1 || day > 31 || month < 1 || month > 12) return null;
+      const isoMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (isoMatch) return text;
 
-      return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const parsed = new Date(text);
+      if (!Number.isNaN(parsed.getTime())) {
+        return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+      }
+
+      return null;
     }
 
-    function parseNumberValue(value) {
-      const parsed = Number(String(value || "").trim().replace(",", "."));
-      return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
-    }
+    function mergeRows(inputRows) {
+      const map = new Map();
 
-    function splitDelimitedLine(line) {
-      const delimiter = line.includes(";") ? ";" : ",";
-      return line.split(delimiter).map((part) => part.trim().replace(/^"|"$/g, ""));
-    }
-
-    function mergeRows(list) {
-      const grouped = new Map();
-
-      list.forEach((row) => {
+      inputRows.forEach((row) => {
         const key = `${row.date}__${row.category}`;
-        grouped.set(key, (grouped.get(key) || 0) + row.quantity);
+        const current = map.get(key);
+        if (current) {
+          current.quantity += row.quantity;
+        } else {
+          map.set(key, { ...row });
+        }
       });
 
-      return Array.from(grouped.entries())
-        .map(([key, quantity]) => {
-          const parts = key.split("__");
-          return { date: parts[0], category: parts[1], quantity };
-        })
-        .sort((a, b) => a.date.localeCompare(b.date) || a.category.localeCompare(b.category));
+      return Array.from(map.values()).sort((a, b) => `${a.date}-${a.category}`.localeCompare(`${b.date}-${b.category}`));
+    }
+
+    function parseRowsFromObjects(items) {
+      let skipped = 0;
+      const rows = [];
+
+      items.forEach((item) => {
+        const dataValue = item.data ?? item.Data ?? item.DATA ?? item.date ?? item.Date;
+        const categoryValue = item.categoria ?? item.Categoria ?? item.CATEGORIA ?? item.classificacao ?? item.classificação ?? item.origem ?? item.canal;
+        const quantityValue = item.quantidade ?? item.Quantidade ?? item.QUANTIDADE ?? item.total ?? item.Total;
+
+        const date = parseDateCell(dataValue);
+        const category = normalizeCategory(categoryValue);
+        const quantity = quantityValue == null || quantityValue === ""
+          ? 1
+          : Number(String(quantityValue).replace(",", "."));
+
+        if (!date || !Number.isFinite(quantity) || quantity <= 0) {
+          skipped += 1;
+          return;
+        }
+
+        rows.push({ date, category, quantity: Math.round(quantity) });
+      });
+
+      return {
+        rows: mergeRows(rows),
+        skipped,
+      };
     }
 
     function parseRowsFromText(text) {
-      const lines = text
-        .replace(/\r/g, "")
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean);
+      const workbook = XLSX.read(text, { type: "string" });
+      const sheetName = workbook.SheetNames.find((name) => name === DEFAULT_SHEET_NAME) || workbook.SheetNames[0];
+      if (!sheetName) return { rows: [], skipped: 0, error: "A planilha está vazia." };
 
-      if (!lines.length) {
-        return { rows: [], skipped: 0 };
-      }
-
-      const header = splitDelimitedLine(lines[0]).map(normalizeHeader);
-      const dateIndex = header.findIndex((item) => ["data", "periodo", "dia", "date"].includes(item));
-      const categoryIndex = header.findIndex((item) => ["categoria", "classificacao", "origem", "canal", "entradacategoria", "source"].includes(item));
-      const quantityIndex = header.findIndex((item) => ["quantidade", "qtd", "total", "volume"].includes(item));
-
-      if (dateIndex === -1 || categoryIndex === -1) {
-        return { rows: [], skipped: Math.max(lines.length - 1, 0) };
-      }
-
-      let skipped = 0;
-      const imported = [];
-
-      lines.slice(1).forEach((line) => {
-        const parts = splitDelimitedLine(line);
-        const date = parseDateValue(parts[dateIndex]);
-        if (!date) {
-          skipped += 1;
-          return;
-        }
-
-        imported.push({
-          date,
-          category: normalizeCategory(parts[categoryIndex] || ""),
-          quantity: quantityIndex >= 0 ? parseNumberValue(parts[quantityIndex]) : 1
-        });
-      });
-
-      return {
-        rows: mergeRows(imported),
-        skipped
-      };
-    }
-
-    function parseRowsFromMatrix(matrix) {
-      const cleanMatrix = matrix
-        .map((row) => row.map((cell) => String(cell || "").trim()))
-        .filter((row) => row.some(Boolean));
-
-      if (!cleanMatrix.length) {
-        return { rows: [], skipped: 0 };
-      }
-
-      const header = cleanMatrix[0].map(normalizeHeader);
-      const dateIndex = header.findIndex((item) => ["data", "periodo", "dia", "date"].includes(item));
-      const categoryIndex = header.findIndex((item) => ["categoria", "classificacao", "origem", "canal", "entradacategoria", "source"].includes(item));
-      const quantityIndex = header.findIndex((item) => ["quantidade", "qtd", "total", "volume"].includes(item));
-
-      if (dateIndex === -1 || categoryIndex === -1) {
-        return { rows: [], skipped: Math.max(cleanMatrix.length - 1, 0) };
-      }
-
-      let skipped = 0;
-      const imported = [];
-
-      cleanMatrix.slice(1).forEach((row) => {
-        const date = parseDateValue(row[dateIndex]);
-        if (!date) {
-          skipped += 1;
-          return;
-        }
-
-        imported.push({
-          date,
-          category: normalizeCategory(row[categoryIndex] || ""),
-          quantity: quantityIndex >= 0 ? parseNumberValue(row[quantityIndex]) : 1
-        });
-      });
-
-      return {
-        rows: mergeRows(imported),
-        skipped
-      };
+      const sheet = workbook.Sheets[sheetName];
+      const items = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+      return parseRowsFromObjects(items);
     }
 
     async function parseRowsFromFile(file) {
-      const name = file.name.toLowerCase();
-      const isExcel = name.endsWith(".xlsx") || name.endsWith(".xls");
+      const extension = file.name.split(".").pop()?.toLowerCase();
 
-      if (!isExcel) {
-        return parseRowsFromText(await file.text());
-      }
-
-      if (!window.XLSX) {
-        return {
-          rows: [],
-          skipped: 0,
-          error: "A biblioteca de leitura XLSX não carregou. Verifique a conexão com a internet ou exporte a planilha como CSV."
-        };
+      if (extension === "csv" || extension === "txt") {
+        const text = await file.text();
+        return parseRowsFromText(text);
       }
 
       const buffer = await file.arrayBuffer();
-      const workbook = window.XLSX.read(buffer, { type: "array", cellDates: false });
-      const sheetName = workbook.SheetNames.includes(DEFAULT_SHEET_NAME)
-        ? DEFAULT_SHEET_NAME
-        : workbook.SheetNames[0];
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheetName = workbook.SheetNames.find((name) => name === DEFAULT_SHEET_NAME) || workbook.SheetNames[0];
+      if (!sheetName) return { rows: [], skipped: 0, error: "A planilha está vazia." };
 
-      if (!sheetName) {
-        return {
-          rows: [],
-          skipped: 0,
-          error: "O arquivo Excel não possui abas legíveis."
-        };
+      const items = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+      return parseRowsFromObjects(items);
+    }
+
+    function deriveGoogleSheetCsvUrl(rawUrl) {
+      const input = String(rawUrl || "").trim();
+      if (!input) return { csvUrl: "", editUrl: "" };
+
+      if (input.includes("output=csv")) {
+        return { csvUrl: input, editUrl: input };
       }
 
-      const matrix = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-        header: 1,
-        raw: false,
-        defval: ""
-      });
+      try {
+        const url = new URL(input);
+        if (!url.hostname.includes("docs.google.com")) {
+          return { csvUrl: input, editUrl: input };
+        }
 
-      return parseRowsFromMatrix(matrix);
+        const match = url.pathname.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+        const gid = url.searchParams.get("gid") || "0";
+        if (!match) return { csvUrl: "", editUrl: input };
+
+        const csvUrl = `https://docs.google.com/spreadsheets/d/${match[1]}/export?format=csv&gid=${gid}`;
+        const editUrl = `https://docs.google.com/spreadsheets/d/${match[1]}/edit#gid=${gid}`;
+        return { csvUrl, editUrl };
+      } catch (error) {
+        return { csvUrl: input, editUrl: input };
+      }
     }
 
-    function formatDisplayDate(value) {
-      const parts = value.split("-");
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    function getWeekStart(isoDate) {
+      const date = new Date(`${isoDate}T00:00:00`);
+      const day = date.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      date.setDate(date.getDate() + diff);
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
     }
 
-    function getWeekStart(value) {
-      const parts = value.split("-").map(Number);
-      const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
-      const weekday = date.getUTCDay();
-      const distance = weekday === 0 ? -6 : 1 - weekday;
-      date.setUTCDate(date.getUTCDate() + distance);
-      return `${String(date.getUTCFullYear()).padStart(4, "0")}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+    function formatDisplayDate(isoDate) {
+      const [year, month, day] = isoDate.split("-");
+      return `${day}/${month}/${year}`;
     }
 
-    function getGroupKey(date, mode) {
-      if (mode === "week") return getWeekStart(date);
-      if (mode === "month") return date.slice(0, 7);
-      return date;
+    function getGroupLabel(period, mode) {
+      if (mode === "day") return formatDisplayDate(period);
+      if (mode === "month") {
+        const [year, month] = period.split("-");
+        return `Mês ${month}/${year}`;
+      }
+      return `Semana de ${formatDisplayDate(period)}`;
     }
 
-    function getGroupLabel(key, mode) {
-      if (mode === "day") return formatDisplayDate(key);
-      if (mode === "month") return `${key.slice(5, 7)}/${key.slice(0, 4)}`;
-      return `Semana de ${formatDisplayDate(key)}`;
+    function getPeriodKey(row, mode) {
+      if (mode === "day") return row.date;
+      if (mode === "month") return row.date.slice(0, 7);
+      return getWeekStart(row.date);
     }
 
     function aggregateRows(mode) {
-      const grouped = new Map();
+      const map = new Map();
 
       rows.forEach((row) => {
-        const key = getGroupKey(row.date, mode);
-        const current = grouped.get(key) || { period: key, total: 0, byCategory: {} };
+        const period = getPeriodKey(row, mode);
+        const current = map.get(period) || { period, total: 0, byCategory: {} };
         current.total += row.quantity;
         current.byCategory[row.category] = (current.byCategory[row.category] || 0) + row.quantity;
-        grouped.set(key, current);
+        map.set(period, current);
       });
 
-      return Array.from(grouped.values()).sort((a, b) => a.period.localeCompare(b.period));
+      return Array.from(map.values()).sort((a, b) => a.period.localeCompare(b.period));
+    }
+
+    function buildTotalsWeekDatasets() {
+      return aggregateRows("week").map((item) => ({
+        periodKey: item.period,
+        label: getGroupLabel(item.period, "week"),
+        byCategory: item.byCategory,
+      }));
+    }
+
+    function buildTotalsMonthDatasets() {
+      return aggregateRows("month").map((item) => ({
+        periodKey: item.period,
+        label: getGroupLabel(item.period, "month"),
+        byCategory: item.byCategory,
+      }));
     }
 
     function getTotalsDatasets(mode) {
-      return aggregateRows(mode).map((item) => ({
-        periodKey: item.period,
-        label: getGroupLabel(item.period, mode),
-        total: item.total,
-        byCategory: item.byCategory
-      }));
+      return mode === "week" ? buildTotalsWeekDatasets() : buildTotalsMonthDatasets();
     }
 
     function getDefaultTotalsSelection(datasets) {
@@ -1871,4 +1816,3 @@
   </script>
 </body>
 </html>
-
