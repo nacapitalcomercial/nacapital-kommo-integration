@@ -928,7 +928,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE_KEY = "nacapital-leads-dashboard-static-v7";
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v9";
     const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
     const DEFAULT_SHEET_NAME = "Leads_Semanais";
     const CATEGORY_ORDER = [
@@ -1366,6 +1366,61 @@
             "date": "2026-08-31",
             "category": "Base/Retorno",
             "quantity": 2
+        },
+        {
+            "date": "2026-09-01",
+            "category": "Indicacao/Parceiro",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-02",
+            "category": "Google",
+            "quantity": 4
+        },
+        {
+            "date": "2026-09-02",
+            "category": "Indicacao/Parceiro",
+            "quantity": 3
+        },
+        {
+            "date": "2026-09-02",
+            "category": "Instagram",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-02",
+            "category": "Base/Retorno",
+            "quantity": 2
+        },
+        {
+            "date": "2026-09-02",
+            "category": "Nao informado",
+            "quantity": 2
+        },
+        {
+            "date": "2026-09-03",
+            "category": "Base/Retorno",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-04",
+            "category": "Base/Retorno",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-04",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-09",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-09",
+            "category": "Instagram",
+            "quantity": 2
         }
     ];
 
@@ -1378,7 +1433,7 @@
     let totalsMode = "month";
     let totalsSelectedPeriods = [];
     let funnelMode = "week";
-    let funnelSelectedPeriods = ["2026-08-10"];
+    let funnelSelectedPeriods = ["2026-08-31", "2026-09-07"];
 
     const sourceNode = document.getElementById("source-label");
     const totalNode = document.getElementById("total-leads");
@@ -1571,27 +1626,53 @@
         {
             "weekStart": "2026-08-31",
             "label": "Semana de 31/08/2026",
-            "source": "Base lida do PDF Book 6 (7)",
+            "source": "Base lida dos PDFs Book 6 (7) e Book 6 (8)",
             "stages": {
                 "visitas": {
-                    "total": 2,
+                    "total": 10,
                     "byCategory": {
-                        "Base/Retorno": 2
+                        "Base/Retorno": 6,
+                        "Indicacao/Parceiro": 2,
+                        "Nao informado": 2
                     }
+                },
+                "propostas": {
+                    "total": 13,
+                    "byCategory": {
+                        "Google": 5,
+                        "Base/Retorno": 5,
+                        "Nao informado": 2,
+                        "Indicacao/Parceiro": 1
+                    }
+                },
+                "contratos": {
+                    "total": 6,
+                    "byCategory": {
+                        "Base/Retorno": 4,
+                        "Google": 2
+                    }
+                }
+            }
+        },
+        {
+            "weekStart": "2026-09-07",
+            "label": "Semana de 07/09/2026",
+            "source": "Base lida do PDF Book 6 (9)",
+            "stages": {
+                "visitas": {
+                    "total": 0,
+                    "byCategory": {}
                 },
                 "propostas": {
                     "total": 3,
                     "byCategory": {
-                        "Google": 2,
-                        "Base/Retorno": 1
+                        "Google": 1,
+                        "Instagram": 2
                     }
                 },
                 "contratos": {
-                    "total": 2,
-                    "byCategory": {
-                        "Google": 1,
-                        "Base/Retorno": 1
-                    }
+                    "total": 0,
+                    "byCategory": {}
                 }
             }
         }
