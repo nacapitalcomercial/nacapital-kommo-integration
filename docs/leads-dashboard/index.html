@@ -928,7 +928,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE_KEY = "nacapital-leads-dashboard-static-v10";
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v11";
     const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
     const DEFAULT_SHEET_NAME = "Leads_Semanais";
     const CATEGORY_ORDER = [
@@ -1426,6 +1426,51 @@
             "date": "2026-09-11",
             "category": "Instagram",
             "quantity": 1
+        },
+        {
+            "date": "2026-09-14",
+            "category": "Indicacao/Parceiro",
+            "quantity": 2
+        },
+        {
+            "date": "2026-09-14",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-14",
+            "category": "Base/Retorno",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-14",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-15",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-15",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-16",
+            "category": "Instagram",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-17",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-21",
+            "category": "Indicacao/Parceiro",
+            "quantity": 2
         }
     ];
 
@@ -1438,7 +1483,7 @@
     let totalsMode = "month";
     let totalsSelectedPeriods = [];
     let funnelMode = "week";
-    let funnelSelectedPeriods = ["2026-08-31", "2026-09-07"];
+    let funnelSelectedPeriods = ["2026-09-07", "2026-09-14", "2026-09-21"];
 
     const sourceNode = document.getElementById("source-label");
     const totalNode = document.getElementById("total-leads");
@@ -1673,6 +1718,58 @@
                     "byCategory": {
                         "Google": 1,
                         "Instagram": 3
+                    }
+                },
+                "contratos": {
+                    "total": 0,
+                    "byCategory": {}
+                }
+            }
+        },
+        {
+            "weekStart": "2026-09-14",
+            "label": "Semana de 14/09/2026",
+            "source": "Base lida do PDF Book 6 (11)",
+            "stages": {
+                "visitas": {
+                    "total": 2,
+                    "byCategory": {
+                        "Base/Retorno": 1,
+                        "Nao informado": 1
+                    }
+                },
+                "propostas": {
+                    "total": 6,
+                    "byCategory": {
+                        "Indicacao/Parceiro": 2,
+                        "Base/Retorno": 1,
+                        "Google": 2,
+                        "Nao informado": 1
+                    }
+                },
+                "contratos": {
+                    "total": 1,
+                    "byCategory": {
+                        "Indicacao/Parceiro": 1
+                    }
+                }
+            }
+        },
+        {
+            "weekStart": "2026-09-21",
+            "label": "Semana de 21/09/2026",
+            "source": "Base lida do PDF Book 6 (11)",
+            "stages": {
+                "visitas": {
+                    "total": 1,
+                    "byCategory": {
+                        "Indicacao/Parceiro": 1
+                    }
+                },
+                "propostas": {
+                    "total": 2,
+                    "byCategory": {
+                        "Indicacao/Parceiro": 2
                     }
                 },
                 "contratos": {
