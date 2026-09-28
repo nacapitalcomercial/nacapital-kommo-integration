@@ -928,7 +928,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE_KEY = "nacapital-leads-dashboard-static-v11";
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v12";
     const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
     const DEFAULT_SHEET_NAME = "Leads_Semanais";
     const CATEGORY_ORDER = [
@@ -1449,11 +1449,6 @@
         },
         {
             "date": "2026-09-15",
-            "category": "Nao informado",
-            "quantity": 1
-        },
-        {
-            "date": "2026-09-15",
             "category": "Google",
             "quantity": 1
         },
@@ -1470,7 +1465,67 @@
         {
             "date": "2026-09-21",
             "category": "Indicacao/Parceiro",
-            "quantity": 2
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-21",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-21",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-22",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-22",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-22",
+            "category": "Instagram",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-22",
+            "category": "Indicacao/Parceiro",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-22",
+            "category": "Base/Retorno",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-23",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-23",
+            "category": "Indicacao/Parceiro",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-23",
+            "category": "Nao informado",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-25",
+            "category": "Google",
+            "quantity": 1
+        },
+        {
+            "date": "2026-09-25",
+            "category": "Nao informado",
+            "quantity": 1
         }
     ];
 
@@ -1758,23 +1813,30 @@
         {
             "weekStart": "2026-09-21",
             "label": "Semana de 21/09/2026",
-            "source": "Base lida do PDF Book 6 (11)",
+            "source": "Base lida dos PDFs Book 6 (11) e Book 6 (12)",
             "stages": {
                 "visitas": {
+                    "total": 5,
+                    "byCategory": {
+                        "Indicacao/Parceiro": 1,
+                        "Nao informado": 3,
+                        "Google": 1
+                    }
+                },
+                "propostas": {
+                    "total": 8,
+                    "byCategory": {
+                        "Indicacao/Parceiro": 3,
+                        "Google": 2,
+                        "Nao informado": 2,
+                        "Base/Retorno": 1
+                    }
+                },
+                "contratos": {
                     "total": 1,
                     "byCategory": {
                         "Indicacao/Parceiro": 1
                     }
-                },
-                "propostas": {
-                    "total": 2,
-                    "byCategory": {
-                        "Indicacao/Parceiro": 2
-                    }
-                },
-                "contratos": {
-                    "total": 0,
-                    "byCategory": {}
                 }
             }
         }
