@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatório Meta Ads - Último mês</title>
+  <style>
+    :root {
+      --navy: #14203A;
+      --blue: #2F7FB6;
+      --orange: #F47A32;
+      --green: #2EA596;
+      --paper: #F5F1E8;
+      --card: #FFFDF8;
+      --muted: #5D687C;
+      --line: #DDD7C9;
+      --soft: #ECE6DA;
+      --shadow: 0 18px 40px rgba(20, 32, 58, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(244, 122, 50, 0.18), transparent 28%),
+        linear-gradient(135deg, #F8F4EA 0%, #EEE9DD 100%);
+      color: var(--navy);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 42px 28px 64px;
+    }
+    .hero, .panel {
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      padding: 36px;
+      margin-bottom: 20px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--blue);
+    }
+    h1 {
+      margin: 16px 0 12px;
+      max-width: 720px;
+      font-size: clamp(36px, 5vw, 72px);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+    }
+    h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -0.04em;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.55;
+      max-width: 720px;
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      align-content: end;
+    }
+    label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--navy);
+      border-radius: 16px;
+      padding: 14px 14px;
+      font-size: 15px;
+      outline: none;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .card {
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 12px 28px rgba(20, 32, 58, 0.06);
+    }
+    .card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+    .card strong {
+      display: block;
+      font-size: 30px;
+      letter-spacing: -0.04em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.76fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .panel {
+      padding: 26px;
+      margin-bottom: 20px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .bar-list {
+      display: grid;
+      gap: 16px;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.55fr) minmax(260px, 1fr) 86px;
+      gap: 16px;
+      align-items: center;
+    }
+    .bar-label strong {
+      display: block;
+      font-size: 15px;
+    }
+    .bar-label span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+    .track {
+      width: 100%;
+      height: 18px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #E9E4DC;
+    }
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      min-width: 0;
+      transition: width 180ms ease;
+    }
+    .fill.paid { background: linear-gradient(90deg, var(--orange), #FFB168); }
+    .value {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 13px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: var(--navy);
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 11px;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .source-note {
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 14px 0 0;
+      font-size: 13px;
+    }
+    .empty {
+      color: var(--muted);
+      background: var(--soft);
+      border-radius: 18px;
+      padding: 18px;
+      line-height: 1.5;
+    }
+    @media (max-width: 980px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .filters, .cards { grid-template-columns: 1fr 1fr; }
+      .bar-row { grid-template-columns: 1fr; gap: 8px; }
+      .value { text-align: left; }
+    }
+    @media (max-width: 640px) {
+      main { padding: 24px 14px 42px; }
+      .hero, .panel { padding: 22px; border-radius: 22px; }
+      .filters, .cards { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">NaCapital Meta</div>
+      <h1>Relatório Meta Ads - Último mês</h1>
+      <p class="subtitle">
+        Painel consolidado para separar a leitura orgânica do perfil Instagram e a leitura paga das campanhas,
+        com filtros por canal, campanha e período.
+      </p>
+      <p class="source-note">Período principal: 01/09/2026 a 29/09/2026 | Conta: NaCapital (639101696622735) | Atualizado em 29/09/2026.</p>
+    </div>
+    <div class="filters" aria-label="Filtros do relatorio">
+      <label>Canal
+        <select id="channel-filter"></select>
+      </label>
+      <label>Campanha
+        <select id="campaign-filter"></select>
+      </label>
+      <label>Período
+        <select id="period-filter"></select>
+      </label>
+    </div>
+  </section>
+
+  <section class="cards" id="summary-cards"></section>
+
+  <section class="grid">
+    <div>
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Orgânico x Pago</div>
+            <h2>Resumo comparativo</h2>
+          </div>
+          <span class="pill" id="active-filter-label">Todos os canais</span>
+        </div>
+        <div class="bar-list" id="channel-bars"></div>
+        <p class="source-note">
+          Observacao: alcance pago somado por campanha pode ter sobreposicao entre pessoas alcancadas. Use como leitura operacional,
+          nao como alcance deduplicado.
+        </p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Campanhas</div>
+            <h2>Performance paga por campanha</h2>
+          </div>
+          <span class="pill" id="paid-count-label">0 campanhas</span>
+        </div>
+        <div class="bar-list" id="campaign-bars"></div>
+      </section>
+    </div>
+
+    <aside>
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Perfil Instagram</div>
+            <h2>Métricas orgânicas</h2>
+          </div>
+          <span class="pill">Meta Insights</span>
+        </div>
+        <div class="bar-list" id="organic-bars"></div>
+      </section>
+    </aside>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="eyebrow">Base detalhada</div>
+        <h2>Tabela de campanhas pagas</h2>
+      </div>
+      <span class="pill">Meta Ads</span>
+    </div>
+    <div id="paid-table"></div>
+    <p class="source-note">
+      Para atualizar os dados pagos, edite <code>campaign_metrics.csv</code>. Para atualizar os dados orgânicos,
+      edite <code>organic_metrics.csv</code>. Depois rode <code>python generate_report.py</code> nesta pasta.
+    </p>
+  </section>
+</main>
+
+<script>
+const REPORT_DATA = {"paidRows": [{"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 3.0, "cost_per_result_brl": 45.4, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 136.21, "impressions": 7354.0, "reach": 5793.0, "end_date": "25 de set de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Diaria de Estacao | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 11.0, "cost_per_result_brl": 14.75, "budget_brl": 24.83, "budget_type": "Diario", "spend_brl": 162.27, "impressions": 5097.0, "reach": 3275.0, "end_date": "25 de set de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Junho 2026", "campaign": "[ARTK] 2026 - MAIO - Enseada do Sua", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "4 de jun de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Abril 2026", "campaign": "[Artk] 2026 - Marco - Escritorio Virtual", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 350.0, "budget_type": "Total", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "13 de abr de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Abril 2026", "campaign": "[Artk] 2026 - Marco - Salas", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 250.0, "budget_type": "Total", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "9 de abr de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "[Enjamento] teste Albani", "status": "Desativado", "objective": "Multiplas conversoes", "result_type": "Multiplas conversoes", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "2024 [ALCANCE] [divulgacao ES] [IG]", "status": "Desativado", "objective": "Alcance", "result_type": "Alcance", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Julho 2026", "campaign": "Impulsionamento - NaCapital", "status": "Desativado", "objective": "Alcance", "result_type": "Alcance", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "23 de jul de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Outros periodos", "campaign": "Conversao - NaCapital", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "28 de fev de 2023", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "Cadastro - ES", "status": "Desativado", "objective": "Leads", "result_type": "Lead da Meta", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Credibilidade | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 2.0, "cost_per_result_brl": 52.13, "budget_brl": 5.17, "budget_type": "Diario", "spend_brl": 104.25, "impressions": 2017.0, "reach": 1098.0, "end_date": "18 de set de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Sala Privativa 7+ | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 8.0, "cost_per_result_brl": 28.88, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 231.01, "impressions": 21339.0, "reach": 17373.0, "end_date": "10 de set de 2026", "attribution": "Nao exibido", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Agosto 2026", "campaign": "[30/07/2026] Promovendo \"https://api.whatsapp.com/send\"", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 20.0, "budget_type": "Diario", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "6 de ago de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Julho 2026", "campaign": "[NC] 2026 - Leads - Salas Privativas 5+ | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "29 de jul de 2026", "attribution": "Nao exibido", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Marco 2026", "campaign": "[Artk] 2026 - Fevereiro - Salas", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 250.0, "budget_type": "Total", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "1 de mar de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Marco 2026", "campaign": "[Artk] 2026 - Janeiro - Escritorio Virtual", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 500.0, "budget_type": "Total", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "10 de mar de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Outros periodos", "campaign": "[2024] [engajamento servicos]", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "30 de jun de 2024", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}], "organicRows": [{"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Visualizacoes", "value": 50083.0, "variation": "26,7%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Alcance", "value": 13100.0, "variation": "25,6%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Interacoes com o conteudo", "value": 1300.0, "variation": "50,2%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Cliques no link", "value": 109.0, "variation": "131,9%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Visitas ao perfil", "value": 783.0, "variation": "38,3%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Seguidores", "value": 73.0, "variation": "21,5%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}], "defaultPeriod": "Setembro 2026", "updatedAt": "29/09/2026"};
+
+const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const integer = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+
+function formatMetric(value, type = "number") {
+  if (type === "currency") return currency.format(value || 0);
+  return integer.format(value || 0);
+}
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function unique(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function option(value, label = value) {
+  const el = document.createElement("option");
+  el.value = value;
+  el.textContent = label;
+  return el;
+}
+
+function setupFilters() {
+  const channels = ["Todos", "Organico", "Pago"];
+  byId("channel-filter").replaceChildren(...channels.map((item) => option(item, item === "Organico" ? "Orgânico / Perfil" : item)));
+
+  const periods = unique([...REPORT_DATA.organicRows.map((row) => row.period), ...REPORT_DATA.paidRows.map((row) => row.period)]).sort();
+  byId("period-filter").replaceChildren(option("Todos", "Todos os períodos"), ...periods.map((item) => option(item)));
+  byId("period-filter").value = periods.includes(REPORT_DATA.defaultPeriod) ? REPORT_DATA.defaultPeriod : "Todos";
+
+  refreshCampaignOptions();
+  byId("channel-filter").addEventListener("change", () => {
+    refreshCampaignOptions();
+    render();
+  });
+  byId("period-filter").addEventListener("change", () => {
+    refreshCampaignOptions();
+    render();
+  });
+  byId("campaign-filter").addEventListener("change", render);
+}
+
+function refreshCampaignOptions() {
+  const channel = byId("channel-filter").value || "Todos";
+  const period = byId("period-filter").value || "Todos";
+  const current = byId("campaign-filter").value || "Todos";
+  const campaigns = unique([
+    ...REPORT_DATA.organicRows
+      .filter((row) => (channel === "Todos" || channel === "Organico") && (period === "Todos" || row.period === period))
+      .map((row) => row.campaign),
+    ...REPORT_DATA.paidRows
+      .filter((row) => row.channel === "Pago" && (channel === "Todos" || channel === "Pago") && (period === "Todos" || row.period === period))
+      .map((row) => row.campaign),
+  ]).sort();
+  byId("campaign-filter").replaceChildren(option("Todos", "Todas as campanhas"), ...campaigns.map((item) => option(item)));
+  byId("campaign-filter").value = campaigns.includes(current) ? current : "Todos";
+}
+
+function filteredData() {
+  const channel = byId("channel-filter").value;
+  const campaign = byId("campaign-filter").value;
+  const period = byId("period-filter").value;
+
+  const paid = REPORT_DATA.paidRows.filter((row) => {
+    const channelMatch = channel === "Todos" || channel === "Pago";
+    const campaignMatch = campaign === "Todos" || row.campaign === campaign;
+    const periodMatch = period === "Todos" || row.period === period;
+    return channelMatch && campaignMatch && periodMatch && row.channel === "Pago";
+  });
+
+  const organic = REPORT_DATA.organicRows.filter((row) => {
+    const channelMatch = channel === "Todos" || channel === "Organico";
+    const campaignMatch = campaign === "Todos" || row.campaign === campaign;
+    const periodMatch = period === "Todos" || row.period === period;
+    return channelMatch && campaignMatch && periodMatch;
+  });
+
+  return { paid, organic, channel, campaign, period };
+}
+
+function sum(rows, key) {
+  return rows.reduce((total, row) => total + Number(row[key] || 0), 0);
+}
+
+function organicValue(rows, metric) {
+  const row = rows.find((item) => item.metric === metric);
+  return row ? Number(row.value || 0) : 0;
+}
+
+function renderCards(data) {
+  const paidSpend = sum(data.paid, "spend_brl");
+  const paidResults = sum(data.paid, "results");
+  const organicViews = organicValue(data.organic, "Visualizacoes");
+  const organicReach = organicValue(data.organic, "Alcance");
+  const cards = [
+    ["Investimento pago", formatMetric(paidSpend, "currency")],
+    ["Conversas pagas", formatMetric(paidResults)],
+    ["Visualizações orgânicas", formatMetric(organicViews)],
+    ["Alcance orgânico", formatMetric(organicReach)],
+  ];
+  byId("summary-cards").replaceChildren(...cards.map(([label, value]) => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+    return div;
+  }));
+}
+
+function renderBars(containerId, rows, valueKey, labelKey, subLabel, type = "number", className = "") {
+  const container = byId(containerId);
+  if (!rows.length) {
+    container.innerHTML = '<div class="empty">Não há dados para os filtros selecionados.</div>';
+    return;
+  }
+  const max = Math.max(...rows.map((row) => Number(row[valueKey] || 0)), 1);
+  container.replaceChildren(...rows.map((row) => {
+    const value = Number(row[valueKey] || 0);
+    const width = Math.max(0, (value / max) * 100);
+    const div = document.createElement("div");
+    div.className = "bar-row";
+    div.innerHTML = `
+      <div class="bar-label"><strong>${row[labelKey]}</strong><span>${typeof subLabel === "function" ? subLabel(row) : subLabel}</span></div>
+      <div class="track"><div class="fill ${className}" style="width:${width}%"></div></div>
+      <div class="value">${formatMetric(value, type)}</div>
+    `;
+    return div;
+  }));
+}
+
+function renderChannelComparison(data) {
+  const rows = [
+    { label: "Orgânico / Visualizações", note: "Conteúdo e perfil Instagram", value: organicValue(data.organic, "Visualizacoes") },
+    { label: "Orgânico / Alcance", note: "Alcance do perfil no período", value: organicValue(data.organic, "Alcance") },
+    { label: "Orgânico / Interações", note: "Interações com conteúdo", value: organicValue(data.organic, "Interacoes com o conteudo") },
+    { label: "Pago / Impressões", note: "Campanhas com investimento", value: sum(data.paid, "impressions") },
+    { label: "Pago / Alcance somado", note: "Soma operacional por campanha", value: sum(data.paid, "reach") },
+    { label: "Pago / Conversas", note: "Conversas por mensagem iniciadas", value: sum(data.paid, "results") },
+  ].filter((row) => row.value > 0);
+  renderBars("channel-bars", rows, "value", "label", (row) => row.note, "number");
+}
+
+function renderOrganic(data) {
+  const rows = data.organic.map((row) => ({
+    label: row.metric,
+    note: row.variation ? `Variação informada: ${row.variation}` : row.source,
+    value: row.value,
+  }));
+  renderBars("organic-bars", rows, "value", "label", (row) => row.note, "number");
+}
+
+function renderPaidCampaigns(data) {
+  const rows = [...data.paid].sort((a, b) => b.spend_brl - a.spend_brl);
+  byId("paid-count-label").textContent = `${rows.length} campanha${rows.length === 1 ? "" : "s"}`;
+  renderBars("campaign-bars", rows, "spend_brl", "campaign", (row) => `${formatMetric(row.results)} conversas | ${row.status} | ${row.period}`, "currency", "paid");
+}
+
+function renderTable(data) {
+  const rows = [...data.paid].sort((a, b) => b.spend_brl - a.spend_brl);
+  if (!rows.length) {
+    byId("paid-table").innerHTML = '<div class="empty">Nenhuma campanha paga nos filtros selecionados.</div>';
+    return;
+  }
+  const trs = rows.map((row) => `
+    <tr>
+      <td>${row.campaign}</td>
+      <td>${row.status}</td>
+      <td>${row.period}</td>
+      <td>${formatMetric(row.results)}</td>
+      <td>${formatMetric(row.spend_brl, "currency")}</td>
+      <td>${row.cost_per_result_brl ? formatMetric(row.cost_per_result_brl, "currency") : "-"}</td>
+      <td>${formatMetric(row.reach)}</td>
+      <td>${formatMetric(row.impressions)}</td>
+    </tr>
+  `).join("");
+  byId("paid-table").innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Campanha</th>
+          <th>Status</th>
+          <th>Período</th>
+          <th>Conversas</th>
+          <th>Gasto</th>
+          <th>Custo/resultado</th>
+          <th>Alcance</th>
+          <th>Impressões</th>
+        </tr>
+      </thead>
+      <tbody>${trs}</tbody>
+    </table>
+  `;
+}
+
+function render() {
+  const data = filteredData();
+  const filterLabel = [
+    data.channel === "Todos" ? "Todos os canais" : data.channel,
+    data.period === "Todos" ? "Todos os períodos" : data.period,
+    data.campaign === "Todos" ? "Todas as campanhas" : data.campaign,
+  ].join(" | ");
+  byId("active-filter-label").textContent = filterLabel;
+  renderCards(data);
+  renderChannelComparison(data);
+  renderOrganic(data);
+  renderPaidCampaigns(data);
+  renderTable(data);
+}
+
+setupFilters();
+render();
+</script>
+</body>
+</html>
