@@ -159,6 +159,79 @@
       display: grid;
       gap: 16px;
     }
+    .campaign-grid {
+      display: grid;
+      gap: 18px;
+    }
+    .campaign-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(250, 246, 237, 0.92));
+      padding: 18px;
+    }
+    .campaign-card-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+    .campaign-card h3 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+    .campaign-status {
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .metric-chip {
+      border-radius: 16px;
+      background: #F5EFE3;
+      padding: 12px;
+    }
+    .metric-chip span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+    .metric-chip strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+    .mini-bars {
+      display: grid;
+      gap: 9px;
+    }
+    .mini-bar {
+      display: grid;
+      grid-template-columns: 108px minmax(160px, 1fr) 82px;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .mini-bar strong {
+      color: var(--navy);
+      font-size: 12px;
+    }
     .bar-row {
       display: grid;
       grid-template-columns: minmax(180px, 0.55fr) minmax(260px, 1fr) 86px;
@@ -235,13 +308,17 @@
     @media (max-width: 980px) {
       .hero, .grid { grid-template-columns: 1fr; }
       .filters, .cards { grid-template-columns: 1fr 1fr; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .bar-row { grid-template-columns: 1fr; gap: 8px; }
+      .mini-bar { grid-template-columns: 1fr; gap: 6px; }
       .value { text-align: left; }
     }
     @media (max-width: 640px) {
       main { padding: 24px 14px 42px; }
       .hero, .panel { padding: 22px; border-radius: 22px; }
       .filters, .cards { grid-template-columns: 1fr; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .campaign-card-head { grid-template-columns: 1fr; }
       table { display: block; overflow-x: auto; }
     }
   </style>
@@ -285,8 +362,8 @@
         </div>
         <div class="bar-list" id="channel-bars"></div>
         <p class="source-note">
-          Observacao: alcance pago somado por campanha pode ter sobreposicao entre pessoas alcancadas. Use como leitura operacional,
-          nao como alcance deduplicado.
+          Observação: alcance pago somado por campanha pode ter sobreposição entre pessoas alcançadas. Use como leitura operacional,
+          não como alcance deduplicado.
         </p>
       </section>
 
@@ -337,6 +414,19 @@ const REPORT_DATA = {"paidRows": [{"channel": "Pago", "period": "Setembro 2026",
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const integer = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+const metricLabels = {
+  Visualizacoes: "Visualizações",
+  Alcance: "Alcance",
+  "Interacoes com o conteudo": "Interações com o conteúdo",
+  "Cliques no link": "Cliques no link",
+  "Visitas ao perfil": "Visitas ao perfil",
+  Seguidores: "Seguidores",
+};
+const statusLabels = {
+  Ativo: "Ativo",
+  Concluido: "Concluído",
+  Desativado: "Desativado",
+};
 
 function formatMetric(value, type = "number") {
   if (type === "currency") return currency.format(value || 0);
@@ -362,7 +452,10 @@ function setupFilters() {
   const channels = ["Todos", "Organico", "Pago"];
   byId("channel-filter").replaceChildren(...channels.map((item) => option(item, item === "Organico" ? "Orgânico / Perfil" : item)));
 
-  const periods = unique([...REPORT_DATA.organicRows.map((row) => row.period), ...REPORT_DATA.paidRows.map((row) => row.period)]).sort();
+  const periods = unique([
+    ...REPORT_DATA.organicRows.map((row) => row.period),
+    ...REPORT_DATA.paidRows.filter((row) => row.channel === "Pago").map((row) => row.period),
+  ]).sort();
   byId("period-filter").replaceChildren(option("Todos", "Todos os períodos"), ...periods.map((item) => option(item)));
   byId("period-filter").value = periods.includes(REPORT_DATA.defaultPeriod) ? REPORT_DATA.defaultPeriod : "Todos";
 
@@ -479,7 +572,7 @@ function renderChannelComparison(data) {
 
 function renderOrganic(data) {
   const rows = data.organic.map((row) => ({
-    label: row.metric,
+    label: metricLabels[row.metric] || row.metric,
     note: row.variation ? `Variação informada: ${row.variation}` : row.source,
     value: row.value,
   }));
@@ -489,7 +582,52 @@ function renderOrganic(data) {
 function renderPaidCampaigns(data) {
   const rows = [...data.paid].sort((a, b) => b.spend_brl - a.spend_brl);
   byId("paid-count-label").textContent = `${rows.length} campanha${rows.length === 1 ? "" : "s"}`;
-  renderBars("campaign-bars", rows, "spend_brl", "campaign", (row) => `${formatMetric(row.results)} conversas | ${row.status} | ${row.period}`, "currency", "paid");
+  const container = byId("campaign-bars");
+  if (!rows.length) {
+    container.innerHTML = '<div class="empty">Nenhuma campanha paga nos filtros selecionados.</div>';
+    return;
+  }
+  const maxSpend = Math.max(...rows.map((row) => Number(row.spend_brl || 0)), 1);
+  const maxResults = Math.max(...rows.map((row) => Number(row.results || 0)), 1);
+  const maxReach = Math.max(...rows.map((row) => Number(row.reach || 0)), 1);
+  const maxImpressions = Math.max(...rows.map((row) => Number(row.impressions || 0)), 1);
+  container.className = "campaign-grid";
+  container.replaceChildren(...rows.map((row) => {
+    const cost = row.results > 0 ? row.spend_brl / row.results : 0;
+    const metrics = [
+      ["Gasto", formatMetric(row.spend_brl, "currency")],
+      ["Conversas", formatMetric(row.results)],
+      ["Custo/conversa", cost ? formatMetric(cost, "currency") : "-"],
+      ["Alcance", formatMetric(row.reach)],
+    ];
+    const bars = [
+      ["Gasto", row.spend_brl, maxSpend, formatMetric(row.spend_brl, "currency"), "paid"],
+      ["Conversas", row.results, maxResults, formatMetric(row.results), ""],
+      ["Alcance", row.reach, maxReach, formatMetric(row.reach), ""],
+      ["Impressões", row.impressions, maxImpressions, formatMetric(row.impressions), ""],
+    ];
+    const card = document.createElement("article");
+    card.className = "campaign-card";
+    card.innerHTML = `
+      <div class="campaign-card-head">
+        <h3>${row.campaign}</h3>
+        <span class="campaign-status">${statusLabels[row.status] || row.status} · ${row.period}</span>
+      </div>
+      <div class="metric-grid">
+        ${metrics.map(([label, value]) => `<div class="metric-chip"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+      </div>
+      <div class="mini-bars">
+        ${bars.map(([label, value, max, display, className]) => `
+          <div class="mini-bar">
+            <strong>${label}</strong>
+            <div class="track"><div class="fill ${className}" style="width:${Math.max(0, (value / max) * 100)}%"></div></div>
+            <span>${display}</span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    return card;
+  }));
 }
 
 function renderTable(data) {
@@ -501,7 +639,7 @@ function renderTable(data) {
   const trs = rows.map((row) => `
     <tr>
       <td>${row.campaign}</td>
-      <td>${row.status}</td>
+      <td>${statusLabels[row.status] || row.status}</td>
       <td>${row.period}</td>
       <td>${formatMetric(row.results)}</td>
       <td>${formatMetric(row.spend_brl, "currency")}</td>
