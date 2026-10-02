@@ -269,6 +269,21 @@
       font-size: 18px;
       font-weight: 800;
     }
+    #organic-bars .bar-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px 14px;
+    }
+    #organic-bars .bar-label {
+      grid-column: 1 / -1;
+    }
+    #organic-bars .track {
+      min-width: 0;
+    }
+    #organic-bars .value {
+      min-width: 74px;
+      font-size: 17px;
+      text-align: right;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
