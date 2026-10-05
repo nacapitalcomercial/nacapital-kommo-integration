@@ -257,6 +257,79 @@
       border-radius: 999px;
       background: linear-gradient(90deg, var(--orange), #FFB168);
     }
+    .google-panel {
+      margin: 0 0 20px;
+      padding: 26px;
+      background:
+        radial-gradient(circle at 0 0, rgba(47, 127, 182, 0.12), transparent 32%),
+        rgba(255, 253, 248, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .google-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .google-head h2 {
+      margin-bottom: 8px;
+    }
+    .google-copy {
+      max-width: 620px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .google-period {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: #EAF2F8;
+      color: var(--blue);
+      padding: 9px 13px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .google-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .google-card {
+      min-height: 128px;
+      border: 1px solid #D8E4ED;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #FFFFFF, #F7FBFD);
+      padding: 18px;
+    }
+    .google-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+    .google-card strong {
+      display: block;
+      color: var(--navy);
+      font-size: clamp(27px, 3.3vw, 38px);
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+    .google-card small {
+      display: block;
+      margin-top: 9px;
+      color: var(--muted);
+      line-height: 1.38;
+    }
     .grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(360px, 0.76fr);
@@ -456,6 +529,8 @@
       .management-head { display: grid; }
       .management-grid { grid-template-columns: 1fr 1fr; }
       .management-card.featured { grid-column: 1 / -1; }
+      .google-grid { grid-template-columns: 1fr 1fr; }
+      .google-head { display: grid; }
       .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .bar-row { grid-template-columns: 1fr; gap: 8px; }
       .mini-bar { grid-template-columns: 1fr; gap: 6px; }
@@ -468,6 +543,9 @@
       .management-panel { padding: 22px; border-radius: 22px; }
       .management-grid, .management-meta { grid-template-columns: 1fr; }
       .management-period { white-space: normal; }
+      .google-panel { padding: 22px; border-radius: 22px; }
+      .google-grid { grid-template-columns: 1fr; }
+      .google-period { white-space: normal; }
       .metric-grid { grid-template-columns: 1fr; }
       .campaign-card-head { grid-template-columns: 1fr; }
       table { display: block; overflow-x: auto; }
@@ -511,6 +589,21 @@
       <span class="management-period" id="management-period-label">Todos os períodos</span>
     </div>
     <div class="management-grid" id="management-cards"></div>
+  </section>
+
+  <section class="google-panel" aria-label="Indicadores Google Ads">
+    <div class="google-head">
+      <div>
+        <div class="eyebrow">Google Ads</div>
+        <h2>Indicadores de busca</h2>
+        <p class="google-copy">
+          Leitura complementar de mídia de busca para acompanhar cliques, impressões, conversões e valor consumido.
+        </p>
+      </div>
+      <span class="google-period" id="google-ads-period">Google Ads</span>
+    </div>
+    <div class="google-grid" id="google-ads-cards"></div>
+    <p class="source-note" id="google-ads-source"></p>
   </section>
 
   <section class="cards" id="summary-cards"></section>
@@ -575,10 +668,11 @@
 </main>
 
 <script>
-const REPORT_DATA = {"paidRows": [{"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | Publico especifico | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 1.0, "cost_per_result_brl": 24.95, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 24.95, "impressions": 0.0, "reach": 0.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | Flexibilidade | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 2.0, "cost_per_result_brl": 12.35, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 24.69, "impressions": 0.0, "reach": 0.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 17.0, "cost_per_result_brl": 16.95, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 288.18, "impressions": 7354.0, "reach": 5793.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Diaria de Estacao | WhatsApp", "status": "Desativado", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 23.0, "cost_per_result_brl": 12.69, "budget_brl": 24.83, "budget_type": "Diario", "spend_brl": 291.97, "impressions": 5097.0, "reach": 3275.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Junho 2026", "campaign": "[ARTK] 2026 - MAIO - Enseada do Sua", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "4 de jun de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Abril 2026", "campaign": "[Artk] 2026 - Marco - Escritorio Virtual", "status": "Desativado", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 5.0, "cost_per_result_brl": 19.61, "budget_brl": 350.0, "budget_type": "Total", "spend_brl": 98.03, "impressions": 0.0, "reach": 0.0, "end_date": "13 de abr de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Abril 2026", "campaign": "[Artk] 2026 - Marco - Salas", "status": "Desativado", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 7.0, "cost_per_result_brl": 13.6, "budget_brl": 250.0, "budget_type": "Total", "spend_brl": 95.17, "impressions": 0.0, "reach": 0.0, "end_date": "9 de abr de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "[Enjamento] teste Albani", "status": "Desativado", "objective": "Multiplas conversoes", "result_type": "Multiplas conversoes", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "2024 [ALCANCE] [divulgacao ES] [IG]", "status": "Desativado", "objective": "Alcance", "result_type": "Alcance", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Julho 2026", "campaign": "Impulsionamento - NaCapital", "status": "Desativado", "objective": "Alcance", "result_type": "Alcance", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "23 de jul de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Outros periodos", "campaign": "Conversao - NaCapital", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "28 de fev de 2023", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "Cadastro - ES", "status": "Desativado", "objective": "Leads", "result_type": "Lead da Meta", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Credibilidade | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 2.0, "cost_per_result_brl": 52.13, "budget_brl": 5.17, "budget_type": "Diario", "spend_brl": 104.25, "impressions": 2096.0, "reach": 1098.0, "end_date": "18 de set de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Sala Privativa 7+ | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 8.0, "cost_per_result_brl": 28.88, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 231.01, "impressions": 21339.0, "reach": 17373.0, "end_date": "10 de set de 2026", "attribution": "Nao exibido", "source": "Meta Ads"}, {"channel": "Pago", "period": "Agosto 2026", "campaign": "[30/07/2026] Promovendo \"https://api.whatsapp.com/send\"", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 10.0, "cost_per_result_brl": 13.88, "budget_brl": 20.0, "budget_type": "Diario", "spend_brl": 138.84, "impressions": 3784.0, "reach": 2100.0, "end_date": "6 de ago de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Julho 2026", "campaign": "[NC] 2026 - Leads - Salas Privativas 5+ | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 31.0, "cost_per_result_brl": 11.11, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 344.29, "impressions": 0.0, "reach": 0.0, "end_date": "29 de jul de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Marco 2026", "campaign": "[Artk] 2026 - Fevereiro - Salas", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 13.0, "cost_per_result_brl": 19.23, "budget_brl": 250.0, "budget_type": "Total", "spend_brl": 249.97, "impressions": 0.0, "reach": 0.0, "end_date": "1 de mar de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Marco 2026", "campaign": "[Artk] 2026 - Janeiro - Escritorio Virtual", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 38.0, "cost_per_result_brl": 13.15, "budget_brl": 500.0, "budget_type": "Total", "spend_brl": 499.52, "impressions": 0.0, "reach": 0.0, "end_date": "10 de mar de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Outros periodos", "campaign": "[2024] [engajamento servicos]", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 4.0, "cost_per_result_brl": 7.95, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 31.79, "impressions": 0.0, "reach": 0.0, "end_date": "30 de jun de 2024", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}], "organicRows": [{"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Visualizacoes", "value": 50083.0, "variation": "26,7%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Alcance", "value": 13100.0, "variation": "25,6%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Interacoes com o conteudo", "value": 1300.0, "variation": "50,2%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Cliques no link", "value": 109.0, "variation": "131,9%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Visitas ao perfil", "value": 783.0, "variation": "38,3%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Seguidores", "value": 73.0, "variation": "21,5%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}], "billingRows": [{"period": "Setembro 2026", "spend_brl": 965.05, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Agosto 2026", "spend_brl": 164.51, "source": "Meta Billing Hub", "note": "Transacoes pagas de 1 a 31 de agosto de 2026 no Billing Hub"}, {"period": "Julho 2026", "spend_brl": 344.29, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Junho 2026", "spend_brl": 0.0, "source": "Meta Ads + Facebook Ads", "note": "Sem consumo identificado no painel de campanhas"}, {"period": "Abril 2026", "spend_brl": 193.2, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Marco 2026", "spend_brl": 749.49, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Continuas", "spend_brl": 0.0, "source": "Meta Ads + Facebook Ads", "note": "Campanhas historicas sem consumo identificado"}, {"period": "Outros periodos", "spend_brl": 31.79, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas historicas"}], "defaultPeriod": "Todos", "updatedAt": "02/10/2026", "reachTarget": 50000};
+const REPORT_DATA = {"paidRows": [{"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | Publico especifico | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 1.0, "cost_per_result_brl": 24.95, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 24.95, "impressions": 0.0, "reach": 0.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | Flexibilidade | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 2.0, "cost_per_result_brl": 12.35, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 24.69, "impressions": 0.0, "reach": 0.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Privacidade | WhatsApp", "status": "Ativo", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 17.0, "cost_per_result_brl": 16.95, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 288.18, "impressions": 7354.0, "reach": 5793.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Diaria de Estacao | WhatsApp", "status": "Desativado", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 23.0, "cost_per_result_brl": 12.69, "budget_brl": 24.83, "budget_type": "Diario", "spend_brl": 291.97, "impressions": 5097.0, "reach": 3275.0, "end_date": "25 de set de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Junho 2026", "campaign": "[ARTK] 2026 - MAIO - Enseada do Sua", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "4 de jun de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Abril 2026", "campaign": "[Artk] 2026 - Marco - Escritorio Virtual", "status": "Desativado", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 5.0, "cost_per_result_brl": 19.61, "budget_brl": 350.0, "budget_type": "Total", "spend_brl": 98.03, "impressions": 0.0, "reach": 0.0, "end_date": "13 de abr de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Abril 2026", "campaign": "[Artk] 2026 - Marco - Salas", "status": "Desativado", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 7.0, "cost_per_result_brl": 13.6, "budget_brl": 250.0, "budget_type": "Total", "spend_brl": 95.17, "impressions": 0.0, "reach": 0.0, "end_date": "9 de abr de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "[Enjamento] teste Albani", "status": "Desativado", "objective": "Multiplas conversoes", "result_type": "Multiplas conversoes", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "2024 [ALCANCE] [divulgacao ES] [IG]", "status": "Desativado", "objective": "Alcance", "result_type": "Alcance", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Julho 2026", "campaign": "Impulsionamento - NaCapital", "status": "Desativado", "objective": "Alcance", "result_type": "Alcance", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "23 de jul de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Outros periodos", "campaign": "Conversao - NaCapital", "status": "Desativado", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "28 de fev de 2023", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Historico pago", "period": "Continuas", "campaign": "Cadastro - ES", "status": "Desativado", "objective": "Leads", "result_type": "Lead da Meta", "results": 0.0, "cost_per_result_brl": 0.0, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 0.0, "impressions": 0.0, "reach": 0.0, "end_date": "Campanhas continuas", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Recursos Avulsos | Credibilidade | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 2.0, "cost_per_result_brl": 52.13, "budget_brl": 5.17, "budget_type": "Diario", "spend_brl": 104.25, "impressions": 2096.0, "reach": 1098.0, "end_date": "18 de set de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Setembro 2026", "campaign": "[NC] 2026 - Leads | Sala Privativa 7+ | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 8.0, "cost_per_result_brl": 28.88, "budget_brl": 15.0, "budget_type": "Diario", "spend_brl": 231.01, "impressions": 21339.0, "reach": 17373.0, "end_date": "10 de set de 2026", "attribution": "Nao exibido", "source": "Meta Ads"}, {"channel": "Pago", "period": "Agosto 2026", "campaign": "[30/07/2026] Promovendo \"https://api.whatsapp.com/send\"", "status": "Concluido", "objective": "Conversas", "result_type": "Conversa por mensagem iniciada", "results": 10.0, "cost_per_result_brl": 13.88, "budget_brl": 20.0, "budget_type": "Diario", "spend_brl": 138.84, "impressions": 3784.0, "reach": 2100.0, "end_date": "6 de ago de 2026", "attribution": "Clique de 7 dias ou visualizacao de 1 dia", "source": "Meta Ads"}, {"channel": "Pago", "period": "Julho 2026", "campaign": "[NC] 2026 - Leads - Salas Privativas 5+ | WhatsApp", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 31.0, "cost_per_result_brl": 11.11, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 344.29, "impressions": 0.0, "reach": 0.0, "end_date": "29 de jul de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Marco 2026", "campaign": "[Artk] 2026 - Fevereiro - Salas", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 13.0, "cost_per_result_brl": 19.23, "budget_brl": 250.0, "budget_type": "Total", "spend_brl": 249.97, "impressions": 0.0, "reach": 0.0, "end_date": "1 de mar de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Marco 2026", "campaign": "[Artk] 2026 - Janeiro - Escritorio Virtual", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 38.0, "cost_per_result_brl": 13.15, "budget_brl": 500.0, "budget_type": "Total", "spend_brl": 499.52, "impressions": 0.0, "reach": 0.0, "end_date": "10 de mar de 2026", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}, {"channel": "Pago", "period": "Outros periodos", "campaign": "[2024] [engajamento servicos]", "status": "Concluido", "objective": "Conversas", "result_type": "Conversas por mensagem iniciadas", "results": 4.0, "cost_per_result_brl": 7.95, "budget_brl": 0.0, "budget_type": "Conjunto de anuncios", "spend_brl": 31.79, "impressions": 0.0, "reach": 0.0, "end_date": "30 de jun de 2024", "attribution": "Meta Ads recorte maximo 02/09/2023 a 02/10/2026", "source": "Meta Ads"}], "organicRows": [{"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Visualizacoes", "value": 50083.0, "variation": "26,7%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Alcance", "value": 13100.0, "variation": "25,6%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Interacoes com o conteudo", "value": 1300.0, "variation": "50,2%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Cliques no link", "value": 109.0, "variation": "131,9%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Visitas ao perfil", "value": 783.0, "variation": "38,3%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}, {"channel": "Organico", "period": "Setembro 2026", "campaign": "Perfil Instagram", "metric": "Seguidores", "value": 73.0, "variation": "21,5%", "source": "Meta Insights 01/09/2026 a 29/09/2026"}], "billingRows": [{"period": "Setembro 2026", "spend_brl": 965.05, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Agosto 2026", "spend_brl": 164.51, "source": "Meta Billing Hub", "note": "Transacoes pagas de 1 a 31 de agosto de 2026 no Billing Hub"}, {"period": "Julho 2026", "spend_brl": 344.29, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Junho 2026", "spend_brl": 0.0, "source": "Meta Ads + Facebook Ads", "note": "Sem consumo identificado no painel de campanhas"}, {"period": "Abril 2026", "spend_brl": 193.2, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Marco 2026", "spend_brl": 749.49, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas no recorte maximo do Meta Ads"}, {"period": "Continuas", "spend_brl": 0.0, "source": "Meta Ads + Facebook Ads", "note": "Campanhas historicas sem consumo identificado"}, {"period": "Outros periodos", "spend_brl": 31.79, "source": "Meta Ads + Facebook Ads", "note": "Total operacional por campanhas historicas"}], "defaultPeriod": "Todos", "updatedAt": "02/10/2026", "reachTarget": 50000, "googleAds": {"source": "Google Ads - Visão geral", "period": "1 a 5 out. 2026", "clicks": 32, "impressions": 651, "conversions": 2.0, "spend_brl": 84.03}};
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const integer = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+const decimal = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const metricLabels = {
   Visualizacoes: "Visualizações",
   Alcance: "Alcance",
@@ -601,6 +695,7 @@ const channelLabels = {
 
 function formatMetric(value, type = "number") {
   if (type === "currency") return currency.format(value || 0);
+  if (type === "decimal") return decimal.format(value || 0);
   return integer.format(value || 0);
 }
 
@@ -745,6 +840,28 @@ function renderManagement(data) {
     const div = document.createElement("article");
     div.className = card.className;
     div.innerHTML = card.html;
+    return div;
+  }));
+}
+
+function renderGoogleAds() {
+  const google = REPORT_DATA.googleAds || {};
+  byId("google-ads-period").textContent = google.period ? `Período: ${google.period}` : "Google Ads";
+  byId("google-ads-source").textContent = google.source
+    ? `Fonte: ${google.source}. Dados do período ${google.period || "informado no painel"}.`
+    : "";
+
+  const cards = [
+    ["Cliques", formatMetric(google.clicks), "Interações registradas nos anúncios de busca."],
+    ["Impressões", formatMetric(google.impressions), "Quantidade de vezes em que os anúncios foram exibidos."],
+    ["Conversões", formatMetric(google.conversions, "decimal"), "Conversões atribuídas pelo Google Ads."],
+    ["Valor consumido", formatMetric(google.spend_brl, "currency"), "Custo total consumido pelas campanhas no recorte."],
+  ];
+
+  byId("google-ads-cards").replaceChildren(...cards.map(([label, value, note]) => {
+    const div = document.createElement("article");
+    div.className = "google-card";
+    div.innerHTML = `<span>${label}</span><strong>${value}</strong><small>${note}</small>`;
     return div;
   }));
 }
@@ -910,6 +1027,7 @@ function render() {
   ].join(" | ");
   byId("active-filter-label").textContent = filterLabel;
   renderManagement(data);
+  renderGoogleAds();
   renderCards(data);
   renderChannelComparison(data);
   renderOrganic(data);
