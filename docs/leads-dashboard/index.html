@@ -928,7 +928,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    const STORAGE_KEY = "nacapital-leads-dashboard-static-v12";
+    const STORAGE_KEY = "nacapital-leads-dashboard-static-v13-csv-20261006";
     const DEFAULT_SHEET_EDIT_URL = "https://docs.google.com/spreadsheets/d/1bhkPAzUQExot-v5gcmHhK9tKBBVemfNZemHSyEmzLLo/edit";
     const DEFAULT_SHEET_NAME = "Leads_Semanais";
     const CATEGORY_ORDER = [
@@ -968,577 +968,637 @@
     };
     const INITIAL_DATA = [
         {
-            "date": "2026-04-14",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-04-14",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-07-10",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-07-10",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-07-13",
-            "category": "Google",
-            "quantity": 3
+                "date": "2026-07-13",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-07-13",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-07-13",
+                "category": "Google",
+                "quantity": 4
         },
         {
-            "date": "2026-07-13",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-07-13",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-07-13",
-            "category": "Nao informado",
-            "quantity": 3
+                "date": "2026-07-13",
+                "category": "Ligacao",
+                "quantity": 1
         },
         {
-            "date": "2026-07-13",
-            "category": "Ligacao",
-            "quantity": 1
+                "date": "2026-07-13",
+                "category": "Nao informado",
+                "quantity": 3
         },
         {
-            "date": "2026-07-14",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-07-14",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-07-14",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-07-14",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-07-14",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-07-14",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-07-14",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-07-14",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-07-15",
-            "category": "Instagram",
-            "quantity": 2
+                "date": "2026-07-15",
+                "category": "Instagram",
+                "quantity": 2
         },
         {
-            "date": "2026-07-16",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-07-16",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-07-16",
-            "category": "Nao informado",
-            "quantity": 3
+                "date": "2026-07-16",
+                "category": "Nao informado",
+                "quantity": 3
         },
         {
-            "date": "2026-07-17",
-            "category": "Google",
-            "quantity": 6
+                "date": "2026-07-17",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-07-17",
-            "category": "Base/Retorno",
-            "quantity": 2
+                "date": "2026-07-17",
+                "category": "Google",
+                "quantity": 7
         },
         {
-            "date": "2026-07-17",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-07-17",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-07-20",
-            "category": "Instagram",
-            "quantity": 4
+                "date": "2026-07-17",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-07-20",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-07-20",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-07-20",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-07-20",
+                "category": "Instagram",
+                "quantity": 3
         },
         {
-            "date": "2026-07-21",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-07-20",
+                "category": "Nao informado",
+                "quantity": 2
         },
         {
-            "date": "2026-07-21",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-07-21",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-07-22",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-07-21",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-07-22",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-07-21",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-07-24",
-            "category": "Instagram",
-            "quantity": 7
+                "date": "2026-07-22",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-07-24",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-07-22",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-07-27",
-            "category": "Instagram",
-            "quantity": 7
+                "date": "2026-07-24",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-07-27",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-07-24",
+                "category": "Instagram",
+                "quantity": 7
         },
         {
-            "date": "2026-07-28",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-07-27",
+                "category": "Instagram",
+                "quantity": 7
         },
         {
-            "date": "2026-07-28",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-07-27",
+                "category": "Nao informado",
+                "quantity": 2
         },
         {
-            "date": "2026-07-28",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-07-28",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-07-28",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-07-28",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-07-29",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-07-28",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-07-29",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-07-28",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-07-31",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-07-29",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-07-31",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-07-29",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-07-31",
-            "category": "Nao informado",
-            "quantity": 3
+                "date": "2026-07-31",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-02",
-            "category": "Instagram",
-            "quantity": 3
+                "date": "2026-07-31",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-03",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-07-31",
+                "category": "Nao informado",
+                "quantity": 3
         },
         {
-            "date": "2026-08-03",
-            "category": "Ligacao",
-            "quantity": 1
+                "date": "2026-08-02",
+                "category": "Instagram",
+                "quantity": 3
         },
         {
-            "date": "2026-08-04",
-            "category": "Instagram",
-            "quantity": 2
+                "date": "2026-08-03",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-08-05",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-08-03",
+                "category": "Ligacao",
+                "quantity": 1
         },
         {
-            "date": "2026-08-05",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-08-04",
+                "category": "Instagram",
+                "quantity": 2
         },
         {
-            "date": "2026-08-05",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-05",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-08-06",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-08-05",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-08-06",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-08-05",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-08-06",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-06",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-08-07",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-08-06",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-08-10",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-06",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-08-10",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-08-07",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-08-11",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-10",
+                "category": "Base/Retorno",
+                "quantity": 2
         },
         {
-            "date": "2026-08-11",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-08-10",
+                "category": "Google",
+                "quantity": 3
         },
         {
-            "date": "2026-08-11",
-            "category": "Nao informado",
-            "quantity": 2
+                "date": "2026-08-10",
+                "category": "Nao informado",
+                "quantity": 4
         },
         {
-            "date": "2026-08-12",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-11",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-12",
-            "category": "Indicacao/Parceiro",
-            "quantity": 2
+                "date": "2026-08-11",
+                "category": "Indicacao/Parceiro",
+                "quantity": 2
         },
         {
-            "date": "2026-08-12",
-            "category": "Nao informado",
-            "quantity": 3
+                "date": "2026-08-11",
+                "category": "Nao informado",
+                "quantity": 3
         },
         {
-            "date": "2026-08-13",
-            "category": "Base/Retorno",
-            "quantity": 2
+                "date": "2026-08-12",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-13",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-08-12",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-13",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-08-12",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-08-13",
-            "category": "Nao informado",
-            "quantity": 2
+                "date": "2026-08-12",
+                "category": "Nao informado",
+                "quantity": 2
         },
         {
-            "date": "2026-08-14",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-13",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-14",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-08-13",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-14",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-14",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-17",
-            "category": "Base/Retorno",
-            "quantity": 2
+                "date": "2026-08-14",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-17",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-14",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-08-20",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-17",
+                "category": "Base/Retorno",
+                "quantity": 2
         },
         {
-            "date": "2026-08-20",
-            "category": "Google",
-            "quantity": 3
+                "date": "2026-08-17",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-08-24",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-08-20",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-24",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-08-20",
+                "category": "Google",
+                "quantity": 3
         },
         {
-            "date": "2026-08-24",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-24",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-25",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-24",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-26",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-08-24",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-08-27",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-08-25",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-08-27",
-            "category": "Instagram",
-            "quantity": 2
+                "date": "2026-08-26",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-27",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-27",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-08-28",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-08-27",
+                "category": "Instagram",
+                "quantity": 2
         },
         {
-            "date": "2026-08-28",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-08-27",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-08-28",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-08-28",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-08-31",
-            "category": "Google",
-            "quantity": 2
+                "date": "2026-08-28",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-08-31",
-            "category": "Base/Retorno",
-            "quantity": 2
+                "date": "2026-08-28",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-09-01",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-08-31",
+                "category": "Base/Retorno",
+                "quantity": 2
         },
         {
-            "date": "2026-09-02",
-            "category": "Google",
-            "quantity": 4
+                "date": "2026-08-31",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-09-02",
-            "category": "Indicacao/Parceiro",
-            "quantity": 3
+                "date": "2026-09-01",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-09-02",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-09-02",
+                "category": "Base/Retorno",
+                "quantity": 2
         },
         {
-            "date": "2026-09-02",
-            "category": "Base/Retorno",
-            "quantity": 2
+                "date": "2026-09-02",
+                "category": "Google",
+                "quantity": 4
         },
         {
-            "date": "2026-09-02",
-            "category": "Nao informado",
-            "quantity": 2
+                "date": "2026-09-02",
+                "category": "Indicacao/Parceiro",
+                "quantity": 3
         },
         {
-            "date": "2026-09-03",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-09-02",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-09-04",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-09-02",
+                "category": "Nao informado",
+                "quantity": 2
         },
         {
-            "date": "2026-09-04",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-03",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-09-09",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-04",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-09-09",
-            "category": "Instagram",
-            "quantity": 2
+                "date": "2026-09-04",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-09-11",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-09-09",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-09-14",
-            "category": "Indicacao/Parceiro",
-            "quantity": 2
+                "date": "2026-09-09",
+                "category": "Instagram",
+                "quantity": 2
         },
         {
-            "date": "2026-09-14",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-11",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-09-14",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-09-14",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-09-14",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-14",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-09-15",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-14",
+                "category": "Indicacao/Parceiro",
+                "quantity": 3
         },
         {
-            "date": "2026-09-16",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-09-14",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-09-17",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-15",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-09-21",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-09-16",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-09-21",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-16",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-09-21",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-17",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-09-22",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-21",
+                "category": "Google",
+                "quantity": 2
         },
         {
-            "date": "2026-09-22",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-21",
+                "category": "Indicacao/Parceiro",
+                "quantity": 2
         },
         {
-            "date": "2026-09-22",
-            "category": "Instagram",
-            "quantity": 1
+                "date": "2026-09-22",
+                "category": "Base/Retorno",
+                "quantity": 1
         },
         {
-            "date": "2026-09-22",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-09-22",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-09-22",
-            "category": "Base/Retorno",
-            "quantity": 1
+                "date": "2026-09-22",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-09-23",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-22",
+                "category": "Instagram",
+                "quantity": 1
         },
         {
-            "date": "2026-09-23",
-            "category": "Indicacao/Parceiro",
-            "quantity": 1
+                "date": "2026-09-22",
+                "category": "Nao informado",
+                "quantity": 1
         },
         {
-            "date": "2026-09-23",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-23",
+                "category": "Google",
+                "quantity": 1
         },
         {
-            "date": "2026-09-25",
-            "category": "Google",
-            "quantity": 1
+                "date": "2026-09-23",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
         },
         {
-            "date": "2026-09-25",
-            "category": "Nao informado",
-            "quantity": 1
+                "date": "2026-09-23",
+                "category": "Nao informado",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-25",
+                "category": "Google",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-28",
+                "category": "Base/Retorno",
+                "quantity": 2
+        },
+        {
+                "date": "2026-09-28",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-28",
+                "category": "Nao informado",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-29",
+                "category": "Base/Retorno",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-29",
+                "category": "Indicacao/Parceiro",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-30",
+                "category": "Google",
+                "quantity": 1
+        },
+        {
+                "date": "2026-09-30",
+                "category": "Instagram",
+                "quantity": 1
+        },
+        {
+                "date": "2026-10-01",
+                "category": "Instagram",
+                "quantity": 1
+        },
+        {
+                "date": "2026-10-02",
+                "category": "Base/Retorno",
+                "quantity": 1
+        },
+        {
+                "date": "2026-10-02",
+                "category": "Google",
+                "quantity": 1
+        },
+        {
+                "date": "2026-10-02",
+                "category": "Nao informado",
+                "quantity": 1
         }
-    ];
+];
 
     let rows = INITIAL_DATA.slice();
-    let sourceLabel = "Base inicial importada do PDF";
-    let skippedRows = 0;
+    let sourceLabel = "Base atualizada pelo CSV Book 6(Planilha1) (1)";
+    let skippedRows = 116;
     let sheetCsvUrl = "";
     let sheetEditUrl = "";
     let lastSheetSync = "";
     let totalsMode = "month";
-    let totalsSelectedPeriods = [];
+    let totalsSelectedPeriods = ["2026-04", "2026-07", "2026-08", "2026-09", "2026-10"];
     let funnelMode = "week";
-    let funnelSelectedPeriods = ["2026-09-07", "2026-09-14", "2026-09-21"];
+    let funnelSelectedPeriods = ["2026-07-13", "2026-07-20", "2026-07-27", "2026-08-03", "2026-08-10", "2026-08-17", "2026-08-24", "2026-08-31", "2026-09-07", "2026-09-14", "2026-09-21", "2026-09-28"];
 
     const sourceNode = document.getElementById("source-label");
     const totalNode = document.getElementById("total-leads");
@@ -1595,252 +1655,330 @@
 
     const FUNNEL_PERIOD_DATA = [
         {
-            "weekStart": "2026-07-27",
-            "label": "Semana de 27/07/2026",
-            "source": "Base lida do PDF Book 6 (2)",
-            "stages": {
-                "visitas": {
-                    "total": 7,
-                    "byCategory": {
-                        "Google": 3,
-                        "Base/Retorno": 3,
-                        "Indicacao/Parceiro": 1
-                    }
-                },
-                "propostas": {
-                    "total": 5,
-                    "byCategory": {
-                        "Google": 1,
-                        "Base/Retorno": 3,
-                        "Indicacao/Parceiro": 1
-                    }
-                },
-                "contratos": {
-                    "total": 4,
-                    "byCategory": {
-                        "Base/Retorno": 3,
-                        "Indicacao/Parceiro": 1
-                    }
+                "weekStart": "2026-07-13",
+                "label": "Semana de 13/07/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 3,
+                                "byCategory": {
+                                        "Google": 2,
+                                        "Indicacao/Parceiro": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 2,
+                                "byCategory": {
+                                        "Google": 1,
+                                        "Indicacao/Parceiro": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1
+                                }
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-08-03",
-            "label": "Semana de 03/08/2026",
-            "source": "Base lida do PDF Book 6 (3)",
-            "stages": {
-                "visitas": {
-                    "total": 3,
-                    "byCategory": {
-                        "Google": 2,
-                        "Ligacao": 1
-                    }
-                },
-                "propostas": {
-                    "total": 0,
-                    "byCategory": {}
-                },
-                "contratos": {
-                    "total": 0,
-                    "byCategory": {}
+                "weekStart": "2026-07-20",
+                "label": "Semana de 20/07/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 2,
+                                "byCategory": {
+                                        "Google": 1,
+                                        "Indicacao/Parceiro": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1
+                                }
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-08-10",
-            "label": "Semana de 10/08/2026",
-            "source": "Base lida do PDF Book 6 (6)",
-            "stages": {
-                "visitas": {
-                    "total": 5,
-                    "byCategory": {
-                        "Base/Retorno": 3,
-                        "Google": 1,
-                        "Nao informado": 1
-                    }
-                },
-                "propostas": {
-                    "total": 13,
-                    "byCategory": {
-                        "Base/Retorno": 4,
-                        "Google": 4,
-                        "Indicacao/Parceiro": 2,
-                        "Nao informado": 3
-                    }
-                },
-                "contratos": {
-                    "total": 1,
-                    "byCategory": {
-                        "Nao informado": 1
-                    }
+                "weekStart": "2026-07-27",
+                "label": "Semana de 27/07/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Base/Retorno": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Base/Retorno": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Base/Retorno": 1
+                                }
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-08-17",
-            "label": "Semana de 17/08/2026",
-            "source": "Base lida do PDF Book 6 (6)",
-            "stages": {
-                "visitas": {
-                    "total": 2,
-                    "byCategory": {
-                        "Base/Retorno": 2
-                    }
-                },
-                "propostas": {
-                    "total": 4,
-                    "byCategory": {
-                        "Base/Retorno": 3,
-                        "Google": 1
-                    }
-                },
-                "contratos": {
-                    "total": 2,
-                    "byCategory": {
-                        "Base/Retorno": 1,
-                        "Google": 1
-                    }
+                "weekStart": "2026-08-03",
+                "label": "Semana de 03/08/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 3,
+                                "byCategory": {
+                                        "Google": 2,
+                                        "Ligacao": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 0,
+                                "byCategory": {}
+                        },
+                        "contratos": {
+                                "total": 0,
+                                "byCategory": {}
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-08-24",
-            "label": "Semana de 24/08/2026",
-            "source": "Base lida do PDF Book 6 (7)",
-            "stages": {
-                "visitas": {
-                    "total": 4,
-                    "byCategory": {
-                        "Base/Retorno": 2,
-                        "Nao informado": 2
-                    }
-                },
-                "propostas": {
-                    "total": 3,
-                    "byCategory": {
-                        "Base/Retorno": 2,
-                        "Nao informado": 1
-                    }
-                },
-                "contratos": {
-                    "total": 0,
-                    "byCategory": {}
+                "weekStart": "2026-08-10",
+                "label": "Semana de 10/08/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 4,
+                                "byCategory": {
+                                        "Base/Retorno": 2,
+                                        "Google": 1,
+                                        "Nao informado": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 16,
+                                "byCategory": {
+                                        "Google": 5,
+                                        "Base/Retorno": 5,
+                                        "Nao informado": 4,
+                                        "Indicacao/Parceiro": 2
+                                }
+                        },
+                        "contratos": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Nao informado": 1
+                                }
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-08-31",
-            "label": "Semana de 31/08/2026",
-            "source": "Base lida dos PDFs Book 6 (7) e Book 6 (8)",
-            "stages": {
-                "visitas": {
-                    "total": 10,
-                    "byCategory": {
-                        "Base/Retorno": 6,
-                        "Indicacao/Parceiro": 2,
-                        "Nao informado": 2
-                    }
-                },
-                "propostas": {
-                    "total": 13,
-                    "byCategory": {
-                        "Google": 5,
-                        "Base/Retorno": 5,
-                        "Nao informado": 2,
-                        "Indicacao/Parceiro": 1
-                    }
-                },
-                "contratos": {
-                    "total": 6,
-                    "byCategory": {
-                        "Base/Retorno": 4,
-                        "Google": 2
-                    }
+                "weekStart": "2026-08-17",
+                "label": "Semana de 17/08/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 2,
+                                "byCategory": {
+                                        "Base/Retorno": 2
+                                }
+                        },
+                        "propostas": {
+                                "total": 4,
+                                "byCategory": {
+                                        "Base/Retorno": 3,
+                                        "Google": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 2,
+                                "byCategory": {
+                                        "Base/Retorno": 1,
+                                        "Google": 1
+                                }
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-09-07",
-            "label": "Semana de 07/09/2026",
-            "source": "Base lida dos PDFs Book 6 (9) e Book 6 (10)",
-            "stages": {
-                "visitas": {
-                    "total": 0,
-                    "byCategory": {}
-                },
-                "propostas": {
-                    "total": 4,
-                    "byCategory": {
-                        "Google": 1,
-                        "Instagram": 3
-                    }
-                },
-                "contratos": {
-                    "total": 0,
-                    "byCategory": {}
+                "weekStart": "2026-08-24",
+                "label": "Semana de 24/08/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 4,
+                                "byCategory": {
+                                        "Base/Retorno": 2,
+                                        "Nao informado": 2
+                                }
+                        },
+                        "propostas": {
+                                "total": 3,
+                                "byCategory": {
+                                        "Base/Retorno": 2,
+                                        "Nao informado": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 0,
+                                "byCategory": {}
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-09-14",
-            "label": "Semana de 14/09/2026",
-            "source": "Base lida do PDF Book 6 (11)",
-            "stages": {
-                "visitas": {
-                    "total": 2,
-                    "byCategory": {
-                        "Base/Retorno": 1,
-                        "Nao informado": 1
-                    }
-                },
-                "propostas": {
-                    "total": 6,
-                    "byCategory": {
-                        "Indicacao/Parceiro": 2,
-                        "Base/Retorno": 1,
-                        "Google": 2,
-                        "Nao informado": 1
-                    }
-                },
-                "contratos": {
-                    "total": 1,
-                    "byCategory": {
-                        "Indicacao/Parceiro": 1
-                    }
+                "weekStart": "2026-08-31",
+                "label": "Semana de 31/08/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 10,
+                                "byCategory": {
+                                        "Base/Retorno": 6,
+                                        "Indicacao/Parceiro": 2,
+                                        "Nao informado": 2
+                                }
+                        },
+                        "propostas": {
+                                "total": 13,
+                                "byCategory": {
+                                        "Google": 5,
+                                        "Base/Retorno": 5,
+                                        "Indicacao/Parceiro": 1,
+                                        "Nao informado": 2
+                                }
+                        },
+                        "contratos": {
+                                "total": 6,
+                                "byCategory": {
+                                        "Base/Retorno": 4,
+                                        "Google": 2
+                                }
+                        }
                 }
-            }
         },
         {
-            "weekStart": "2026-09-21",
-            "label": "Semana de 21/09/2026",
-            "source": "Base lida dos PDFs Book 6 (11) e Book 6 (12)",
-            "stages": {
-                "visitas": {
-                    "total": 5,
-                    "byCategory": {
-                        "Indicacao/Parceiro": 1,
-                        "Nao informado": 3,
-                        "Google": 1
-                    }
-                },
-                "propostas": {
-                    "total": 8,
-                    "byCategory": {
-                        "Indicacao/Parceiro": 3,
-                        "Google": 2,
-                        "Nao informado": 2,
-                        "Base/Retorno": 1
-                    }
-                },
-                "contratos": {
-                    "total": 1,
-                    "byCategory": {
-                        "Indicacao/Parceiro": 1
-                    }
+                "weekStart": "2026-09-07",
+                "label": "Semana de 07/09/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 0,
+                                "byCategory": {}
+                        },
+                        "propostas": {
+                                "total": 4,
+                                "byCategory": {
+                                        "Google": 1,
+                                        "Instagram": 3
+                                }
+                        },
+                        "contratos": {
+                                "total": 0,
+                                "byCategory": {}
+                        }
                 }
-            }
+        },
+        {
+                "weekStart": "2026-09-14",
+                "label": "Semana de 14/09/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 2,
+                                "byCategory": {
+                                        "Base/Retorno": 1,
+                                        "Instagram": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 7,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 3,
+                                        "Base/Retorno": 1,
+                                        "Google": 2,
+                                        "Instagram": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1
+                                }
+                        }
+                }
+        },
+        {
+                "weekStart": "2026-09-21",
+                "label": "Semana de 21/09/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 5,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1,
+                                        "Google": 2,
+                                        "Nao informado": 2
+                                }
+                        },
+                        "propostas": {
+                                "total": 9,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 4,
+                                        "Google": 2,
+                                        "Nao informado": 2,
+                                        "Base/Retorno": 1
+                                }
+                        },
+                        "contratos": {
+                                "total": 1,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1
+                                }
+                        }
+                }
+        },
+        {
+                "weekStart": "2026-09-28",
+                "label": "Semana de 28/09/2026",
+                "source": "Base lida do CSV Book 6(Planilha1) (1)",
+                "stages": {
+                        "visitas": {
+                                "total": 5,
+                                "byCategory": {
+                                        "Base/Retorno": 4,
+                                        "Indicacao/Parceiro": 1
+                                }
+                        },
+                        "propostas": {
+                                "total": 9,
+                                "byCategory": {
+                                        "Base/Retorno": 4,
+                                        "Indicacao/Parceiro": 2,
+                                        "Nao informado": 1,
+                                        "Instagram": 2
+                                }
+                        },
+                        "contratos": {
+                                "total": 2,
+                                "byCategory": {
+                                        "Indicacao/Parceiro": 1,
+                                        "Nao informado": 1
+                                }
+                        }
+                }
         }
-    ];
+];
 
     function pad(value) {
       return String(value).padStart(2, "0");
@@ -1850,10 +1988,10 @@
       if (!rawValue) return "Nao informado";
       const value = String(rawValue).normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
 
-      if (value.includes("insta")) return "Instagram";
-      if (value.includes("goog")) return "Google";
-      if (value.includes("indic") || value.includes("parce")) return "Indicacao/Parceiro";
-      if (value.includes("base") || value.includes("retorno") || value.includes("reativ")) return "Base/Retorno";
+      if (value.includes("insta") || value.includes("facebook")) return "Instagram";
+      if (value.includes("goog") || value.includes("busca") || value.includes("internet") || value.includes("chatgpt") || value.includes("chat gpt")) return "Google";
+      if (value.includes("indic") || value.includes("parce") || value.includes("gigi") || value.includes("nazca") || value.includes("contato")) return "Indicacao/Parceiro";
+      if (value.includes("base") || value.includes("retorno") || value.includes("reativ") || value.includes("cliente") || value.includes("conhece") || value.includes("conhecia") || value.startsWith("ja ")) return "Base/Retorno";
       if (value.includes("liga") || value.includes("telefone") || value.includes("call")) return "Ligacao";
       if (value.includes("nao") || value.includes("sem") || value.includes("não")) return "Nao informado";
       return "Nao informado";
@@ -1917,7 +2055,7 @@
 
       items.forEach((item) => {
         const dataValue = item.data ?? item.Data ?? item.DATA ?? item.date ?? item.Date;
-        const categoryValue = item.categoria ?? item.Categoria ?? item.CATEGORIA ?? item.classificacao ?? item.classificação ?? item.origem ?? item.canal;
+        const categoryValue = item.categoria ?? item.Categoria ?? item.CATEGORIA ?? item.classificacao ?? item.classificação ?? item.origem ?? item.Origem ?? item.canal ?? item.Canal ?? item["Por onde nos encontrou"] ?? item["Por onde nos encontrou "] ?? item["Por onde nos encontrou?"];
         const quantityValue = item.quantidade ?? item.Quantidade ?? item.QUANTIDADE ?? item.total ?? item.Total;
 
         const date = parseDateCell(dataValue);
