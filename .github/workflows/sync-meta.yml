@@ -22,9 +22,9 @@ jobs:
 
       - name: Consultar Meta Graph API
         env:
-          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
-          META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
-          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN || secrets.SECRET_META }}
+          META_IG_USER_ID: "17841416711983429"
+          META_AD_ACCOUNT_ID: "639101696622735"
           META_GRAPH_VERSION: ${{ secrets.META_GRAPH_VERSION }}
         run: node scripts/sync-meta-insights.mjs
 
