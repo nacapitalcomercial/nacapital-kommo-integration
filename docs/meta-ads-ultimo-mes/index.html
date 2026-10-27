@@ -921,10 +921,10 @@ function renderGoogleAds(data) {
     ? (rows.length ? "Agosto a outubro de 2026" : "Todos os períodos")
     : data.period;
   byId("google-ads-period").textContent = hasGoogle
-    ? \`Período: \${periodLabel}\`
+    ? `Período: ${periodLabel}`
     : "Sem dados Google Ads para o recorte selecionado";
   byId("google-ads-source").textContent = hasGoogle
-    ? \`Fonte: Google Ads, conta 467-615-5643. Cliques, impressões e conversões vêm da Visão geral; valor consumido vem do Resumo do faturamento. \${data.period === "Todos" ? "O total soma os meses documentados de agosto a outubro de 2026." : "O recorte corresponde exclusivamente ao mês selecionado."}\`
+    ? `Fonte: Google Ads, conta 467-615-5643. Cliques, impressões e conversões vêm da Visão geral; valor consumido vem do Resumo do faturamento. ${data.period === "Todos" ? "O total soma os meses documentados de agosto a outubro de 2026." : "O recorte corresponde exclusivamente ao mês selecionado."}`
     : data.campaign !== "Todos"
       ? "O filtro de campanha do Meta não possui correspondência de campanha Google Ads nesta base."
       : data.channel === "Organico"
@@ -939,11 +939,11 @@ function renderGoogleAds(data) {
   byId("google-ads-cards").replaceChildren(...cards.map(([label, value, note]) => {
     const div = document.createElement("article");
     div.className = "google-card";
-    div.innerHTML = \`<span>\${label}</span><strong>\${value}</strong><small>\${note}</small>\`;
+    div.innerHTML = `<span>${label}</span><strong>${value}</strong><small>${note}</small>`;
     return div;
   }));
   byId("google-ads-history").innerHTML = hasGoogle
-    ? \`<div class="source-note"><strong>Histórico mensal conciliado</strong></div><table><thead><tr><th>Período</th><th>Cliques</th><th>Impressões</th><th>Conversões</th><th>Valor consumido</th><th>Fonte</th></tr></thead><tbody>\${rows.map((row) => \`<tr><td>\${row.period}</td><td>\${formatMetric(row.clicks)}</td><td>\${formatMetric(row.impressions)}</td><td>\${formatMetric(row.conversions, "decimal")}</td><td>\${formatMetric(row.spend_brl, "currency")}</td><td>\${row.source}</td></tr>\`).join("")}</tbody></table>\`
+    ? `<div class="source-note"><strong>Histórico mensal conciliado</strong></div><table><thead><tr><th>Período</th><th>Cliques</th><th>Impressões</th><th>Conversões</th><th>Valor consumido</th><th>Fonte</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row.period}</td><td>${formatMetric(row.clicks)}</td><td>${formatMetric(row.impressions)}</td><td>${formatMetric(row.conversions, "decimal")}</td><td>${formatMetric(row.spend_brl, "currency")}</td><td>${row.source}</td></tr>`).join("")}</tbody></table>`
     : "";
 }
 function renderCards(data) {
