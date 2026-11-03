@@ -721,7 +721,16 @@ function setupFilters() {
     ...REPORT_DATA.organicRows.map((row) => row.period),
     ...REPORT_DATA.paidRows.map((row) => row.period),
     ...REPORT_DATA.billingRows.map((row) => row.period),
-  ]).sort();
+  ]).sort((left, right) => {
+    const leftMonth = parseMonthPeriod(left);
+    const rightMonth = parseMonthPeriod(right);
+    if (leftMonth && rightMonth) {
+      return new Date(rightMonth.year, rightMonth.month, 1) - new Date(leftMonth.year, leftMonth.month, 1);
+    }
+    if (leftMonth) return -1;
+    if (rightMonth) return 1;
+    return left.localeCompare(right, "pt-BR");
+  });
   byId("period-filter").replaceChildren(option("Todos", "Todos os períodos"), ...periods.map((item) => option(item)));
   byId("period-filter").value = periods.includes(REPORT_DATA.defaultPeriod) ? REPORT_DATA.defaultPeriod : "Todos";
 
