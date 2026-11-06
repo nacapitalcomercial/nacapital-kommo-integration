@@ -92,12 +92,21 @@ app.get("/diagnostics/chat-history", async (req, res) => {
     });
   } catch (err) {
     const status = Number(String(err.message).match(/Kommo API error (\d{3})/)?.[1]) || 502;
+    let upstreamDetail = null;
+    const responseText = String(err.message).split(": ").slice(1).join(": ");
+    try {
+      const problem = JSON.parse(responseText);
+      upstreamDetail = problem?.detail || problem?.title || null;
+    } catch {
+      upstreamDetail = null;
+    }
     return res.status(status === 403 ? 403 : 502).json({
       ok: false,
       authorized: false,
       talkId,
       error: status === 403 ? "Kommo denied chat-history access" : "Chat-history diagnostic failed",
-      upstreamStatus: status
+      upstreamStatus: status,
+      upstreamDetail
     });
   }
 });
