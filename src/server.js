@@ -68,6 +68,40 @@ app.get("/health", async (_req, res) => {
   }
 });
 
+app.get("/diagnostics/chat-history", async (req, res) => {
+  const secret = req.header("x-kommo-secret");
+  if (!config.kommo.webhookSecret || secret !== config.kommo.webhookSecret) {
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
+  }
+
+  const talkId = String(req.query.talk_id || "").trim();
+  if (!/^\d+$/.test(talkId) || Number(talkId) <= 0) {
+    return res.status(400).json({ ok: false, error: "talk_id must be a positive integer" });
+  }
+
+  try {
+    const result = await kommo.request(`/talks/${talkId}/messages?limit=1`, {
+      headers: { Accept: "application/hal+json" }
+    });
+    const messages = result?._embedded?.messages;
+    return res.json({
+      ok: true,
+      authorized: true,
+      talkId,
+      sampleCount: Array.isArray(messages) ? messages.length : 0
+    });
+  } catch (err) {
+    const status = Number(String(err.message).match(/Kommo API error (\d{3})/)?.[1]) || 502;
+    return res.status(status === 403 ? 403 : 502).json({
+      ok: false,
+      authorized: false,
+      talkId,
+      error: status === 403 ? "Kommo denied chat-history access" : "Chat-history diagnostic failed",
+      upstreamStatus: status
+    });
+  }
+});
+
 app.get("/metrics/summary", (_req, res) => {
   res.json({
     ok: true,
@@ -392,3 +426,4 @@ async function prepareIndicacaoBroadcastRecipient({ kommo, recipient, campaignNa
       "Usar o modulo de Transmissao do Kommo com template aprovado para enviar a primeira mensagem a este destinatario."
   };
 }
+
