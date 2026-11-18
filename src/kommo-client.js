@@ -100,6 +100,10 @@ export class KommoClient {
     return this.request(`/leads/${leadId}`);
   }
 
+  async getLeadWithContacts(leadId) {
+    return this.request(`/leads/${leadId}?with=contacts`);
+  }
+
   async getContact(contactId) {
     return this.request(`/contacts/${contactId}`);
   }
@@ -381,3 +385,4 @@ export class KommoClient {
     ].filter(Boolean);
   }
 }
+

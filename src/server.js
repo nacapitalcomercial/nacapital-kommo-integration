@@ -9,6 +9,7 @@ import { normalizeWebhook } from "./normalize-webhook.js";
 import { launchIndicacaoBotFlow, processEvent } from "./rules.js";
 import { WebhookGuard } from "./webhook-guard.js";
 import { createNativeMessageRouter } from "./native-message-webhook.js";
+import { syncGenericLeadName } from "./lead-name-sync.js";
 
 const app = express();
 const kommo = new KommoClient();
@@ -43,7 +44,10 @@ app.use((req, res, next) => {
 app.use("/webhooks/kommo/native", createNativeMessageRouter({
   secret: process.env.KOMMO_NATIVE_WEBHOOK_SECRET || "",
   accountId: process.env.KOMMO_NATIVE_ACCOUNT_ID || "",
-  onObservation: (metadata) => log("Native incoming message observed", metadata)
+  onObservation: (metadata) => log("Native incoming message observed", metadata),
+  onNameSync: process.env.KOMMO_LEAD_NAME_SYNC_ENABLED === "true"
+    ? (leadId) => syncGenericLeadName(kommo, leadId)
+    : null
 }));
 
 app.use(express.json({ limit: "1mb" }));
@@ -442,3 +446,4 @@ async function prepareIndicacaoBroadcastRecipient({ kommo, recipient, campaignNa
       "Usar o modulo de Transmissao do Kommo com template aprovado para enviar a primeira mensagem a este destinatario."
   };
 }
+

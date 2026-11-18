@@ -35,11 +35,12 @@ export function extractNativeMessages(payload) {
   return { received: records.length, messages };
 }
 
-// This observer never calls the CRM client, scheduler, Salesbot or legacy rules.
+// The optional name sync is the only CRM write allowed on this route.
 export function createNativeMessageRouter({
   secret = "",
   accountId = null,
   onObservation = () => {},
+  onNameSync = null,
   now = Date.now,
   dedupeTtlMs = 86400000,
   maxDedupeEntries = 5000
@@ -120,6 +121,13 @@ export function createNativeMessageRouter({
         } finally {
           inFlight.delete(key);
         }
+        if (onNameSync) {
+          try {
+            await onNameSync(message.leadId);
+          } catch {
+            // Naming errors never interrupt message observation or trigger retries.
+          }
+        }
         observed += 1;
       }
     } catch {
@@ -156,3 +164,4 @@ function positiveInteger(value) {
 function validIdentifier(value) {
   return typeof value === "string" && /^[A-Za-z0-9_.:-]{1,200}$/.test(value);
 }
+
