@@ -897,11 +897,11 @@ function renderManagement(data) {
     },
     {
       className: "management-card",
-      html: `<span>Saldo consumido</span><strong>${formatMetric(paidSpend, "currency")}</strong><small>Consumo financeiro conforme Billing Hub e Ads Manager.</small>`,
+      html: `<span>Saldo consumido</span><strong>${formatMetric(paidSpend, "currency")}</strong><small>Base Meta paga parcial; o total mensal ainda não foi verificado.</small>`,
     },
     {
       className: "management-card",
-      html: `<span>Conversas WhatsApp</span><strong>${formatMetric(paidResults)}</strong><small>Conversas por mensagem iniciadas nas campanhas do Meta.</small>`,
+      html: `<span>Conversas WhatsApp</span><strong>${formatMetric(paidResults)}</strong><small>Base Meta paga parcial; não equiparar cliques no link a conversas.</small>`,
     },
   ];
 
@@ -961,8 +961,8 @@ function renderCards(data) {
   const organicViews = organicValue(data.organic, "Visualizacoes");
   const organicReach = organicValue(data.organic, "Alcance");
   const cards = [
-    ["Investimento Meta", formatMetric(paidSpend, "currency")],
-    ["Conversas Meta", formatMetric(paidResults)],
+    ["Investimento Meta (parcial)", formatMetric(paidSpend, "currency")],
+    ["Conversas Meta (parcial)", formatMetric(paidResults)],
     ["Visualizações orgânicas", formatMetric(organicViews)],
     ["Alcance orgânico", formatMetric(organicReach)],
   ];
