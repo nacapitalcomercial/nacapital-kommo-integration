@@ -855,8 +855,9 @@ function getPreviousReachTarget(period) {
   if (!parseMonthPeriod(period)) return { value: 0, period: null, available: false };
   const targetPeriod = previousMonthPeriod(period);
   if (!targetPeriod) return { value: 0, period: null, available: false };
-  const rows = REPORT_DATA.organicRows.filter((row) => row.period === targetPeriod && row.metric === "Alcance" && row.scope !== "ytd");
-  return { value: sum(rows, "value"), period: targetPeriod, available: rows.length > 0 };
+  const profileRows = REPORT_DATA.organicRows.filter((row) => row.period === targetPeriod && row.metric === "Alcance" && row.scope !== "ytd");
+  const paidRows = REPORT_DATA.paidRows.filter((row) => row.period === targetPeriod);
+  return { value: sum(profileRows, "value") + sum(paidRows, "reach"), period: targetPeriod, available: profileRows.length > 0 || paidRows.length > 0 };
 }
 
 function renderManagement(data) {
@@ -864,21 +865,22 @@ function renderManagement(data) {
   const paidReachSum = sum(data.paid, "reach");
   const attributed = sum(conversationRows(data.paid), "results");
   const profileReach = organicValue(data.organic, "Alcance");
-  const previous = data.organic.length ? getPreviousReachTarget(data.period) : { value: 0, period: null, available: false };
-  const previousRow = REPORT_DATA.organicRows.find((row) => row.period === previous.period && row.metric === "Alcance" && row.scope !== "ytd");
-  const currentRow = data.organic.find((row) => row.period === data.period && row.metric === "Alcance" && row.scope !== "ytd");
+  const previous = data.channel === "Todos" && data.campaign === "Todos" ? getPreviousReachTarget(data.period) : { value: 0, period: null, available: false };
+  const operationalSum = profileReach + paidReachSum;
+  const operationalIndex = previous.value > 0 ? Math.min(100, operationalSum / previous.value * 100) : 0;
   byId("management-period-label").textContent = data.period === "Todos" ? "Todos os períodos" : data.period;
   const cards = [
     { className: "management-card featured", html: `
-      <span>Alcance do perfil no mês anterior</span>
+      <span>Referência operacional do mês anterior</span>
       <strong>${previous.available ? formatMetric(previous.value) : "—"}</strong>
-      <small>${previousRow && currentRow ? `Referência: ${previousRow.source}. Atual: ${currentRow.source}. Os recortes têm durações diferentes; por isso não exibimos barra nem percentual de progresso.` : "Comparação mensal indisponível para o filtro atual."}</small>
+      <small>${previous.available ? `Referência: ${previous.period}. Soma atual perfil + campanhas: ${formatMetric(operationalSum)}. Índice operacional: ${integer.format(operationalIndex)}%.` : "Comparação mensal indisponível para o filtro atual."}</small>
+      ${previous.available ? `<div class="management-progress" role="img" aria-label="Índice operacional de ${integer.format(operationalIndex)} por cento"><div class="management-progress-fill" style="width:${operationalIndex}%"></div></div>` : ""}
       <div class="management-meta">
         <div><span>Perfil Instagram</span><strong>${formatMetric(profileReach)}</strong></div>
         <div><span>Pago (soma)</span><strong>${formatMetric(paidReachSum)}</strong></div>
-        <div><span>Combinado</span><strong>—</strong></div>
+        <div><span>Soma operacional</span><strong>${formatMetric(operationalSum)}</strong></div>
       </div>
-      <small>Alcance combinado indisponível: perfil e campanhas podem alcançar as mesmas pessoas.</small>
+      <small>Perfil e campanhas podem alcançar as mesmas pessoas; esta soma não é alcance deduplicado. Os meses podem ter recortes de dias diferentes.</small>
     ` },
     { className: "management-card", html: `<span>Alcance do perfil no Meta Insights</span><strong>${formatMetric(profileReach)}</strong><small>O relatório consultado não isola alcance orgânico.</small>` },
     { className: "management-card", html: `<span>Gasto Meta Ads</span><strong>${formatMetric(paidSpend, "currency")}</strong><small>Campanhas da conta exportadas de 01 a 24/11/2026.</small>` },
