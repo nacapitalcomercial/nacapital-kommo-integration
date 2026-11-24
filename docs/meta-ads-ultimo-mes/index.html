@@ -852,7 +852,8 @@ function getLatestMonthPeriod() {
 }
 
 function getPreviousReachTarget(period) {
-  const targetPeriod = previousMonthPeriod(parseMonthPeriod(period) ? period : getLatestMonthPeriod());
+  if (!parseMonthPeriod(period)) return { value: 0, period: null, available: false };
+  const targetPeriod = previousMonthPeriod(period);
   if (!targetPeriod) return { value: 0, period: null, available: false };
   const rows = REPORT_DATA.organicRows.filter((row) => row.period === targetPeriod && row.metric === "Alcance" && row.scope !== "ytd");
   return { value: sum(rows, "value"), period: targetPeriod, available: rows.length > 0 };
@@ -863,15 +864,15 @@ function renderManagement(data) {
   const paidReachSum = sum(data.paid, "reach");
   const attributed = sum(conversationRows(data.paid), "results");
   const profileReach = organicValue(data.organic, "Alcance");
-  const previous = getPreviousReachTarget(data.period);
-  const progress = previous.value > 0 ? Math.min(100, profileReach / previous.value * 100) : 0;
+  const previous = data.organic.length ? getPreviousReachTarget(data.period) : { value: 0, period: null, available: false };
+  const previousRow = REPORT_DATA.organicRows.find((row) => row.period === previous.period && row.metric === "Alcance" && row.scope !== "ytd");
+  const currentRow = data.organic.find((row) => row.period === data.period && row.metric === "Alcance" && row.scope !== "ytd");
   byId("management-period-label").textContent = data.period === "Todos" ? "Todos os períodos" : data.period;
   const cards = [
     { className: "management-card featured", html: `
       <span>Alcance do perfil no mês anterior</span>
       <strong>${previous.available ? formatMetric(previous.value) : "—"}</strong>
-      <small>Referência: ${previous.period || "não identificada"}. Perfil no recorte atual: ${formatMetric(profileReach)}. Comparação parcial: ${previous.available ? integer.format(progress) + "%" : "indisponível"}. Os períodos podem ter dias diferentes.</small>
-      <div class="management-progress"><div class="management-progress-fill" style="width:${progress}%"></div></div>
+      <small>${previousRow && currentRow ? `Referência: ${previousRow.source}. Atual: ${currentRow.source}. Os recortes têm durações diferentes; por isso não exibimos barra nem percentual de progresso.` : "Comparação mensal indisponível para o filtro atual."}</small>
       <div class="management-meta">
         <div><span>Perfil Instagram</span><strong>${formatMetric(profileReach)}</strong></div>
         <div><span>Pago (soma)</span><strong>${formatMetric(paidReachSum)}</strong></div>
